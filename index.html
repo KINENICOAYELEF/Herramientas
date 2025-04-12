@@ -15,3 +15,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
+
+    <body>
+
+    <div class="container mt-4 mb-5">
+        <h1>Cuestionarios de Kinesiología</h1>
+
+        <div class="card mb-4" id="info-paciente-card">
+            <div class="card-header">
+                Información del Paciente (Para incluir en PDF)
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombrePaciente" class="form-label">Nombre del Paciente:</label>
+                        <input type="text" class="form-control" id="nombrePaciente" placeholder="Ingrese nombre (opcional)">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fechaEvaluacion" class="form-label">Fecha de Evaluación:</label>
+                        <input type="date" class="form-control" id="fechaEvaluacion">
+                    </div>
+                </div>
+                 <p class="text-muted small">Nota: Esta información solo se usará al generar el PDF.</p>
+            </div>
+        </div>
+
+        <div id="contenedor-cuestionarios">
+            
