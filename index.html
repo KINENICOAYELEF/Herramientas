@@ -3725,5 +3725,2880 @@
         
 
             
+<script>
+        // ***** INICIO JAVASCRIPT ORIGINAL *****
 
-            
+        // Función para alternar la visibilidad de los cuestionarios
+        function toggleCuestionario(contentId) {
+          const content = document.getElementById(contentId);
+          if (!content) {
+            console.error('Elemento no encontrado:', contentId);
+            return;
+          }
+
+          const header = content.previousElementSibling;
+          if (content.style.display === "none" || !content.style.display) {
+            content.style.display = "block";
+            if (header) header.classList.add("active");
+          } else {
+            content.style.display = "none";
+            if (header) header.classList.remove("active");
+          }
+        }
+
+        // Función para calcular escala PSFS
+        function calcularPSFS() {
+          const puntuacion1Value = document.getElementById('psfs_puntuacion1')?.value; // Added safety check
+          const puntuacion2Value = document.getElementById('psfs_puntuacion2')?.value; // Added safety check
+          const puntuacion3Value = document.getElementById('psfs_puntuacion3')?.value; // Added safety check
+
+          let valores = [];
+
+          if (puntuacion1Value !== "" && puntuacion1Value !== null) valores.push(parseFloat(puntuacion1Value));
+          if (puntuacion2Value !== "" && puntuacion2Value !== null) valores.push(parseFloat(puntuacion2Value));
+          if (puntuacion3Value !== "" && puntuacion3Value !== null) valores.push(parseFloat(puntuacion3Value));
+
+          // Actualizar badge
+          const badge = document.getElementById('psfs-badge');
+          if (badge) { // Added safety check
+              if (valores.length > 0) {
+                  badge.textContent = "Completado";
+                  badge.classList.remove("no-completado"); // Ensure default class is removed
+                  badge.classList.add("completado", "badge-verde");
+              } else {
+                  badge.textContent = "No completado";
+                  badge.classList.remove("completado", "badge-verde");
+                  badge.classList.add("no-completado");
+              }
+          }
+
+          // Calcular promedio si hay valores
+          const valorEl = document.getElementById('psfs-valor');
+          const interpretacionEl = document.getElementById('psfs-interpretacion');
+
+          if (valores.length > 0 && valorEl && interpretacionEl) { // Added safety checks
+            const promedio = valores.reduce((a, b) => a + b, 0) / valores.length;
+            const promedioRedondeado = promedio.toFixed(1);
+
+            valorEl.textContent = promedioRedondeado;
+            // Interpretación según el valor
+            if (promedio < 3) {
+              interpretacionEl.textContent = "Limitación severa de la función";
+              interpretacionEl.className = "resultado-interpretacion rojo";
+            } else if (promedio < 6) {
+              interpretacionEl.textContent = "Limitación moderada de la función";
+              interpretacionEl.className = "resultado-interpretacion amarillo";
+            } else if (promedio < 8) {
+              interpretacionEl.textContent = "Limitación leve de la función";
+              interpretacionEl.className = "resultado-interpretacion verde-claro";
+            } else {
+              interpretacionEl.textContent = "Función normal o casi normal";
+              interpretacionEl.className = "resultado-interpretacion verde";
+            }
+          } else if (valorEl && interpretacionEl) { // Reset if no values
+              valorEl.textContent = "-";
+              interpretacionEl.textContent = "Complete al menos una actividad para obtener un resultado";
+              interpretacionEl.className = "resultado-interpretacion";
+          }
+        }
+
+        // Función para calcular GROC
+        function calcularGROC() {
+          const checkedRadio = document.querySelector('input[name="groc"]:checked');
+          const badge = document.getElementById('groc-badge');
+          const valorEl = document.getElementById('groc-valor');
+          const interpretacionEl = document.getElementById('groc-interpretacion');
+
+          if (checkedRadio && badge && valorEl && interpretacionEl) { // Added safety checks
+            const valorGROC = parseInt(checkedRadio.value);
+
+            // Actualizar badge
+            badge.textContent = "Completado";
+            badge.classList.remove("no-completado");
+            badge.classList.add("completado", "badge-verde");
+
+            valorEl.textContent = valorGROC > 0 ? `+${valorGROC}`: `${valorGROC}`; // Add sign
+            // Interpretación según el valor
+            if (valorGROC <= -5) {
+              interpretacionEl.textContent = "Cambio negativo importante (mucho peor)";
+              interpretacionEl.className = "resultado-interpretacion rojo";
+            } else if (valorGROC < 0) {
+              interpretacionEl.textContent = "Cambio negativo (peor)";
+              interpretacionEl.className = "resultado-interpretacion amarillo";
+            } else if (valorGROC === 0) {
+              interpretacionEl.textContent = "Sin cambios";
+              interpretacionEl.className = "resultado-interpretacion"; // Default style
+            } else if (valorGROC <= 3) {
+              interpretacionEl.textContent = "Cambio positivo mínimo (un poco mejor)";
+              interpretacionEl.className = "resultado-interpretacion verde-claro";
+            } else if (valorGROC <= 5) {
+              interpretacionEl.textContent = "Cambio positivo moderado (mejor)";
+              interpretacionEl.className = "resultado-interpretacion verde";
+            } else {
+              interpretacionEl.textContent = "Cambio positivo importante (mucho mejor)";
+              interpretacionEl.className = "resultado-interpretacion verde";
+            }
+          } else {
+              // Reset if not checked or elements not found
+              if (badge) {
+                 badge.textContent = "No completado";
+                 badge.classList.remove("completado", "badge-verde");
+                 badge.classList.add("no-completado");
+              }
+              if (valorEl) valorEl.textContent = "-";
+              if (interpretacionEl) {
+                   interpretacionEl.textContent = "Seleccione una opción para obtener un resultado";
+                   interpretacionEl.className = "resultado-interpretacion";
+              }
+          }
+        }
+
+        // Función para calcular SANE
+        function calcularSANE() {
+          const puntuacionInput = document.getElementById('sane_puntuacion');
+          const puntuacionValueDisplay = document.getElementById('sane_puntuacion_value');
+          const badge = document.getElementById('sane-badge');
+          const valorEl = document.getElementById('sane-valor');
+          const interpretacionEl = document.getElementById('sane-interpretacion');
+
+           if (!puntuacionInput || !puntuacionValueDisplay || !badge || !valorEl || !interpretacionEl) {
+                console.error("Faltan elementos para calcular SANE");
+                return; // Exit if essential elements are missing
+           }
+
+          const puntuacion = puntuacionInput.value;
+          // Actualizar el valor mostrado junto al slider
+          puntuacionValueDisplay.textContent = puntuacion;
+
+          // Actualizar badge (SANE siempre se considera 'completado' si la función se llama)
+          badge.textContent = "Completado";
+          badge.classList.remove("no-completado");
+          badge.classList.add("completado", "badge-verde");
+
+          valorEl.textContent = puntuacion + "%";
+          // Interpretación según el valor
+          if (puntuacion < 30) {
+            interpretacionEl.textContent = "Función muy reducida";
+            interpretacionEl.className = "resultado-interpretacion rojo";
+          } else if (puntuacion < 50) {
+            interpretacionEl.textContent = "Función deficiente";
+            interpretacionEl.className = "resultado-interpretacion amarillo";
+          } else if (puntuacion < 70) {
+            interpretacionEl.textContent = "Función moderada";
+            interpretacionEl.className = "resultado-interpretacion amarillo";
+          } else if (puntuacion < 90) {
+            interpretacionEl.textContent = "Buena función";
+            interpretacionEl.className = "resultado-interpretacion verde-claro";
+          } else {
+            interpretacionEl.textContent = "Función normal o casi normal";
+            interpretacionEl.className = "resultado-interpretacion verde";
+          }
+        }
+
+        // Función auxiliar para identificar las áreas más afectadas en BPI
+        function getAreasAfectadas(areas) {
+          // Filtrar áreas con valor ≥ 5 (afectación moderada-alta)
+          const areasAfectadas = areas.filter(area => area.valor >= 5)
+                                      .sort((a, b) => b.valor - a.valor) // Ordenar por valor descendente
+                                      .map(area => area.area);
+
+          if (areasAfectadas.length === 0) {
+            return "ningún área en particular";
+          } else if (areasAfectadas.length === 1) {
+            return `principalmente ${areasAfectadas[0]}`;
+          } else if (areasAfectadas.length === 2) {
+            return `principalmente ${areasAfectadas[0]} y ${areasAfectadas[1]}`;
+          } else {
+            const ultimaArea = areasAfectadas.pop();
+            return `principalmente ${areasAfectadas.join(', ')} y ${ultimaArea}`;
+          }
+        }
+
+
+        // Función para calcular resultados del Inventario Breve de Dolor (BPI)
+        function calcularBPI() {
+            // Get all required elements safely
+            const dolorActualEl = document.getElementById('bpi_dolor_actual');
+            const dolorPromedioEl = document.getElementById('bpi_dolor_promedio');
+            const dolorPeorEl = document.getElementById('bpi_dolor_peor');
+            const dolorMenorEl = document.getElementById('bpi_dolor_menor');
+            const interfActividadEl = document.getElementById('bpi_interferencia_actividad');
+            const interfAnimoEl = document.getElementById('bpi_interferencia_animo');
+            const interfCaminarEl = document.getElementById('bpi_interferencia_caminar');
+            const interfTrabajoEl = document.getElementById('bpi_interferencia_trabajo');
+            const interfRelacionesEl = document.getElementById('bpi_interferencia_relaciones');
+            const interfSuenoEl = document.getElementById('bpi_interferencia_sueno');
+            const interfVidaEl = document.getElementById('bpi_interferencia_vida');
+
+            const intensidadValorEl = document.getElementById('bpi-intensidad-valor');
+            const interferenciaValorEl = document.getElementById('bpi-interferencia-valor');
+            const intensidadInterpretacionEl = document.getElementById('bpi-intensidad-interpretacion');
+            const interferenciaInterpretacionEl = document.getElementById('bpi-interferencia-interpretacion');
+            const interpretacionClinicaEl = document.getElementById('bpi-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('bpi-recomendaciones');
+            const bpiBadge = document.getElementById('bpi-badge');
+            const resultadoContainer = document.getElementById('bpi-resultado');
+
+            // Exit if any essential element is missing
+            if (!dolorActualEl || !dolorPromedioEl || !dolorPeorEl || !dolorMenorEl ||
+                !interfActividadEl || !interfAnimoEl || !interfCaminarEl || !interfTrabajoEl ||
+                !interfRelacionesEl || !interfSuenoEl || !interfVidaEl || !intensidadValorEl ||
+                !interferenciaValorEl || !intensidadInterpretacionEl || !interferenciaInterpretacionEl ||
+                !interpretacionClinicaEl || !recomendacionesEl || !bpiBadge || !resultadoContainer) {
+                console.error("Faltan elementos esenciales para calcular BPI.");
+                return;
+            }
+
+            // Recoger valores de intensidad del dolor
+            const dolorActual = parseInt(dolorActualEl.value) || 0;
+            const dolorPromedio = parseInt(dolorPromedioEl.value) || 0;
+            const dolorPeor = parseInt(dolorPeorEl.value) || 0;
+            const dolorMenor = parseInt(dolorMenorEl.value) || 0;
+
+            // Recoger valores de interferencia
+            const interferencia_actividad = parseInt(interfActividadEl.value) || 0;
+            const interferencia_animo = parseInt(interfAnimoEl.value) || 0;
+            const interferencia_caminar = parseInt(interfCaminarEl.value) || 0;
+            const interferencia_trabajo = parseInt(interfTrabajoEl.value) || 0;
+            const interferencia_relaciones = parseInt(interfRelacionesEl.value) || 0;
+            const interferencia_sueno = parseInt(interfSuenoEl.value) || 0;
+            const interferencia_vida = parseInt(interfVidaEl.value) || 0;
+
+            // Calcular promedios
+            const intensidadTotal = (dolorActual + dolorPromedio + dolorPeor + dolorMenor);
+            const numIntensidad = 4; // Always 4 items
+            const intensidadRedondeada = (intensidadTotal / numIntensidad).toFixed(1);
+
+            const totalInterferencias = interferencia_actividad + interferencia_animo + interferencia_caminar +
+                                      interferencia_trabajo + interferencia_relaciones + interferencia_sueno +
+                                      interferencia_vida;
+            const numInterferencias = 7; // Always 7 items
+            const interferenciaRedondeada = (totalInterferencias / numInterferencias).toFixed(1);
+
+            // Mostrar resultados
+            intensidadValorEl.textContent = intensidadRedondeada + '/10';
+            interferenciaValorEl.textContent = interferenciaRedondeada + '/10';
+
+            // Interpretación de la intensidad del dolor
+            let intensidadInterpretacion = '';
+            let intensidadColor = '';
+            if (intensidadRedondeada < 1) {
+                intensidadInterpretacion = 'Sin dolor'; intensidadColor = 'verde';
+            } else if (intensidadRedondeada < 4) {
+                intensidadInterpretacion = 'Dolor leve'; intensidadColor = 'verde-claro';
+            } else if (intensidadRedondeada < 7) {
+                intensidadInterpretacion = 'Dolor moderado'; intensidadColor = 'amarillo';
+            } else {
+                intensidadInterpretacion = 'Dolor severo'; intensidadColor = 'rojo';
+            }
+            intensidadInterpretacionEl.textContent = intensidadInterpretacion;
+            intensidadInterpretacionEl.className = 'resultado-interpretacion ' + intensidadColor;
+
+
+            // Interpretación de la interferencia
+            let interferenciaInterpretacion = '';
+            let interferenciaColor = '';
+            if (interferenciaRedondeada < 1) {
+                interferenciaInterpretacion = 'Sin interferencia'; interferenciaColor = 'verde';
+            } else if (interferenciaRedondeada < 4) {
+                interferenciaInterpretacion = 'Interferencia leve'; interferenciaColor = 'verde-claro';
+            } else if (interferenciaRedondeada < 7) {
+                interferenciaInterpretacion = 'Interferencia moderada'; interferenciaColor = 'amarillo';
+            } else {
+                interferenciaInterpretacion = 'Interferencia severa'; interferenciaColor = 'rojo';
+            }
+            interferenciaInterpretacionEl.textContent = interferenciaInterpretacion;
+            interferenciaInterpretacionEl.className = 'resultado-interpretacion ' + interferenciaColor;
+
+            // Nivel de gravedad general
+            let nivelGravedad = '';
+            if (intensidadRedondeada >= 7 || interferenciaRedondeada >= 7) {
+                nivelGravedad = 'severo';
+                resultadoContainer.className = 'resultado-container nivel-severo';
+            } else if (intensidadRedondeada >= 4 || interferenciaRedondeada >= 4) {
+                nivelGravedad = 'moderado';
+                resultadoContainer.className = 'resultado-container nivel-moderado';
+            } else {
+                nivelGravedad = 'leve';
+                resultadoContainer.className = 'resultado-container nivel-leve';
+            }
+
+            // Actualizar el badge (BPI se considera completo si se llama la función, ya que los sliders tienen valor inicial)
+             bpiBadge.textContent = 'Completado';
+             bpiBadge.classList.remove('no-completado');
+             bpiBadge.classList.add('completado', 'badge-verde');
+
+
+            // Actualizar interpretación clínica
+             interpretacionClinicaEl.innerHTML = `
+                <p>El paciente presenta un dolor de intensidad <strong>${intensidadInterpretacion.toLowerCase()}</strong>
+                (${intensidadRedondeada}/10) con una interferencia <strong>${interferenciaInterpretacion.toLowerCase()}</strong>
+                (${interferenciaRedondeada}/10) en sus actividades diarias.</p>
+                <p>Este patrón sugiere un impacto <strong>${nivelGravedad}</strong> del dolor en la calidad de vida
+                del paciente, afectando principalmente ${getAreasAfectadas([
+                  { area: 'actividad general', valor: interferencia_actividad },
+                  { area: 'estado de ánimo', valor: interferencia_animo },
+                  { area: 'capacidad para caminar', valor: interferencia_caminar },
+                  { area: 'trabajo habitual', valor: interferencia_trabajo },
+                  { area: 'relaciones sociales', valor: interferencia_relaciones },
+                  { area: 'sueño', valor: interferencia_sueno },
+                  { area: 'disfrute de la vida', valor: interferencia_vida }
+                ])}.</p>
+              `;
+
+            // Actualizar recomendaciones terapéuticas
+            if (nivelGravedad === 'severo') {
+                recomendacionesEl.innerHTML = `
+                  <p>Considerar un enfoque multidisciplinar que incluya:</p>
+                  <ul>
+                    <li>Evaluación por especialista en dolor para posible ajuste farmacológico</li>
+                    <li>Combinar terapia manual con modalidades analgésicas</li>
+                    <li>Educación en neurociencia del dolor y estrategias de afrontamiento</li>
+                    <li>Programa de ejercicios graduados con progresión cuidadosa</li>
+                    <li>Valorar impacto psicológico y posible derivación a psicología</li>
+                    <li>Seguimiento frecuente para ajustar intervenciones según respuesta</li>
+                  </ul>
+                `;
+            } else if (nivelGravedad === 'moderado') {
+                recomendacionesEl.innerHTML = `
+                  <p>Se recomienda:</p>
+                  <ul>
+                    <li>Combinar terapia manual y ejercicio terapéutico</li>
+                    <li>Educación sobre manejo del dolor y pacing de actividades</li>
+                    <li>Implementar estrategias de autorregulación (respiración, relajación)</li>
+                    <li>Programa de ejercicios para mejorar la funcionalidad</li>
+                    <li>Revisar impacto en actividades diarias y plantear modificaciones</li>
+                    <li>Seguimiento para evaluar evolución</li>
+                  </ul>
+                `;
+            } else { // Leve
+                recomendacionesEl.innerHTML = `
+                  <p>Se sugiere:</p>
+                  <ul>
+                    <li>Terapia manual enfocada en zonas específicas de dolor</li>
+                    <li>Programa de ejercicios para mantener y mejorar funcionalidad</li>
+                    <li>Educación sobre factores moduladores del dolor</li>
+                    <li>Estrategias de autocuidado y manejo de síntomas</li>
+                    <li>Fomentar retorno gradual a actividades normales</li>
+                  </ul>
+                `;
+            }
+        }
+
+        // ***** FIN JAVASCRIPT PARTE 1 *****
+
+    // ***** INICIO JAVASCRIPT PARTE 2 *****
+
+        // --- Funciones Auxiliares PCS ---
+        function getDescripcionCatastrofizacion(nivel) {
+          switch(nivel) {
+            case "Bajo": return "una tendencia mínima a tener pensamientos negativos exagerados en relación con la experiencia del dolor";
+            case "Moderado": return "cierta tendencia a amplificar las amenazas del dolor, con pensamientos y sentimientos negativos recurrentes";
+            case "Alto": return "una fuerte tendencia a amplificar las amenazas del dolor, con pensamientos y sentimientos negativos muy marcados, lo que puede interferir significativamente con la recuperación";
+            default: return "";
+          }
+        }
+        function getDescripcionRumiacion(puntaje) {
+          if (puntaje <= 5) return "Baja tendencia a centrarse excesivamente en pensamientos dolorosos";
+          else if (puntaje <= 10) return "Moderada tendencia a centrarse repetitivamente en pensamientos relacionados con el dolor";
+          else return "Alta tendencia a la rumiación, con dificultad para apartar los pensamientos sobre el dolor";
+        }
+        function getDescripcionMagnificacion(puntaje) {
+          if (puntaje <= 3) return "Baja tendencia a exagerar las amenazas del dolor";
+          else if (puntaje <= 7) return "Moderada tendencia a exagerar las amenazas y preocuparse por consecuencias negativas";
+          else return "Alta tendencia a magnificar la gravedad del dolor y sus posibles consecuencias";
+        }
+        function getDescripcionDesesperanza(puntaje) {
+          if (puntaje <= 8) return "Baja sensación de no poder hacer frente al dolor";
+          else if (puntaje <= 16) return "Moderado sentimiento de impotencia y dificultad para manejar el dolor";
+          else return "Alta sensación de impotencia y desesperanza ante la situación dolorosa";
+        }
+        // --- Fin Funciones Auxiliares PCS ---
+
+        // Función para calcular la Escala de Catastrofización ante el Dolor (PCS)
+        function calcularPCS() {
+            let valoresItems = [];
+            let completo = true;
+            let itemsRespondidos = 0;
+
+            for (let i = 1; i <= 13; i++) {
+                const itemValue = document.querySelector(`input[name="pcs_item${i}"]:checked`)?.value;
+                if (itemValue !== undefined) {
+                    valoresItems.push(parseInt(itemValue));
+                    itemsRespondidos++;
+                } else {
+                    valoresItems.push(0); // Assume 0 if not answered for calculation, but mark as incomplete
+                    completo = false;
+                }
+            }
+
+            // El cuestionario PCS requiere que TODOS los 13 ítems estén respondidos
+            completo = itemsRespondidos === 13;
+
+            const puntuacionTotal = valoresItems.reduce((sum, val) => sum + val, 0);
+            // Rumiación: ítems 8, 9, 10, 11 (índices 7, 8, 9, 10)
+            const rumiacion = valoresItems[7] + valoresItems[8] + valoresItems[9] + valoresItems[10];
+            // Magnificación: ítems 6, 7, 13 (índices 5, 6, 12)
+            const magnificacion = valoresItems[5] + valoresItems[6] + valoresItems[12];
+            // Desesperanza: ítems 1, 2, 3, 4, 5, 12 (índices 0, 1, 2, 3, 4, 11) -> Correction: items 1-5, 12
+             const desesperanza = valoresItems[0] + valoresItems[1] + valoresItems[2] + valoresItems[3] + valoresItems[4] + valoresItems[11]; // Corrected indices for Desesperanza based on common PCS structure (Needs verification with source)
+
+            // Update UI Elements safely
+            const badge = document.getElementById('pcs-badge');
+            const valorTotalEl = document.getElementById('pcs-valor-total');
+            const valorRumiacionEl = document.getElementById('pcs-valor-rumiacion');
+            const valorMagnificacionEl = document.getElementById('pcs-valor-magnificacion');
+            const valorDesesperanzaEl = document.getElementById('pcs-valor-desesperanza');
+            const interpretacionTotalEl = document.getElementById('pcs-interpretacion-total');
+            const resultadoContainer = document.getElementById('pcs-resultado');
+            const interpretacionClinicaEl = document.getElementById('pcs-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('pcs-recomendaciones');
+
+            if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado";
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde");
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+             if(valorTotalEl) valorTotalEl.textContent = `${puntuacionTotal}/52`;
+             if(valorRumiacionEl) valorRumiacionEl.textContent = `${rumiacion}/16`;
+             if(valorMagnificacionEl) valorMagnificacionEl.textContent = `${magnificacion}/12`;
+             if(valorDesesperanzaEl) valorDesesperanzaEl.textContent = `${desesperanza}/24`;
+
+
+            if (completo && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let nivelCatastrofizacion = "";
+                let colorClass = "";
+                if (puntuacionTotal >= 30) { // Punto de corte común para clínicamente significativo
+                    nivelCatastrofizacion = "Alto";
+                    interpretacionTotalEl.textContent = "Nivel alto de catastrofización (≥30)";
+                    interpretacionTotalEl.className = "resultado-interpretacion rojo";
+                    resultadoContainer.className = "resultado-container nivel-severo";
+                    colorClass="alto";
+                } else if (puntuacionTotal >= 20) {
+                     nivelCatastrofizacion = "Moderado";
+                     interpretacionTotalEl.textContent = "Nivel moderado de catastrofización (20-29)";
+                     interpretacionTotalEl.className = "resultado-interpretacion amarillo";
+                     resultadoContainer.className = "resultado-container nivel-moderado";
+                      colorClass="moderado";
+                }
+                 else {
+                    nivelCatastrofizacion = "Bajo";
+                    interpretacionTotalEl.textContent = "Nivel bajo de catastrofización (<20)";
+                    interpretacionTotalEl.className = "resultado-interpretacion verde";
+                    resultadoContainer.className = "resultado-container nivel-leve";
+                     colorClass="bajo";
+                }
+                 if(badge) badge.className = `resultado-badge completado ${colorClass}`;
+
+
+                interpretacionClinicaEl.innerHTML = `
+                    <p>El paciente presenta un nivel <strong>${nivelCatastrofizacion.toLowerCase()}</strong> de catastrofización ante el dolor (${puntuacionTotal}/52), lo que indica ${getDescripcionCatastrofizacion(nivelCatastrofizacion)}.</p>
+                    <p>Análisis de subescalas:</p>
+                    <ul>
+                        <li><strong>Rumiación</strong> (${rumiacion}/16): ${getDescripcionRumiacion(rumiacion)}</li>
+                        <li><strong>Magnificación</strong> (${magnificacion}/12): ${getDescripcionMagnificacion(magnificacion)}</li>
+                        <li><strong>Desesperanza</strong> (${desesperanza}/24): ${getDescripcionDesesperanza(desesperanza)}</li>
+                    </ul>
+                    <p>La catastrofización ante el dolor es un factor psicológico que puede influir negativamente en la experiencia del dolor, la respuesta al tratamiento y la recuperación funcional.</p>
+                    `;
+
+                if (nivelCatastrofizacion === "Bajo") {
+                    recomendacionesEl.innerHTML = `
+                        <p>Con un nivel bajo de catastrofización, se recomienda:</p>
+                        <ul>
+                            <li>Mantener la educación sobre el dolor y reforzar conceptos que desmitifiquen creencias erróneas (nivel de evidencia 1A)</li>
+                            <li>Enfoque principal en terapia física activa y ejercicio terapéutico (nivel de evidencia 1A)</li>
+                            <li>Proporcionar retroalimentación positiva sobre los avances y capacidades (nivel de evidencia 1B)</li>
+                            <li>Fomentar estrategias de afrontamiento activas (nivel de evidencia 1B)</li>
+                            <li>Monitorizar periódicamente para detectar posibles cambios en la catastrofización (nivel de evidencia 2A)</li>
+                        </ul>`;
+                } else if (nivelCatastrofizacion === "Moderado") {
+                     recomendacionesEl.innerHTML = `
+                        <p>Con un nivel moderado de catastrofización, se recomienda:</p>
+                        <ul>
+                            <li>Implementar educación en neurociencia del dolor para modificar creencias maladaptativas (nivel de evidencia 1A)</li>
+                            <li>Técnicas de reestructuración cognitiva para identificar y desafiar pensamientos catastróficos (nivel de evidencia 1A)</li>
+                            <li>Entrenamiento en atención plena (mindfulness) para reducir la rumiación (nivel de evidencia 1B)</li>
+                            <li>Ejercicio terapéutico graduado con énfasis en la autoeficacia (nivel de evidencia 1A)</li>
+                            <li>Estrategias de exposición gradual a actividades evitadas (nivel de evidencia 1B)</li>
+                            <li>Considerar abordaje interdisciplinar si no hay mejoría (nivel de evidencia 1A)</li>
+                        </ul>`;
+                } else { // Alto
+                     recomendacionesEl.innerHTML = `
+                        <p>Con un nivel alto de catastrofizacion (≥30), considerado clínicamente significativo, se recomienda:</p>
+                        <ul>
+                            <li>Abordaje interdisciplinar que incluya psicología clínica (nivel de evidencia 1A)</li>
+                            <li>Educación intensiva en neurociencia del dolor (nivel de evidencia 1A)</li>
+                            <li>Terapia cognitivo-conductual estructurada para el manejo del dolor (nivel de evidencia 1A)</li>
+                            <li>Técnicas específicas para reducir la rumiación y la desesperanza (nivel de evidencia 1B)</li>
+                            <li>Ejercicio terapéutico con exposición gradual muy controlada (nivel de evidencia 1A)</li>
+                            <li>Entrenamiento en habilidades específicas de regulación emocional (nivel de evidencia 1B)</li>
+                            <li>Establecer objetivos funcionales a corto plazo muy concretos y alcanzables (nivel de evidencia 1A)</li>
+                            <li>Seguimiento cercano y reevaluación frecuente (nivel de evidencia 1B)</li>
+                        </ul>`;
+                }
+
+            } else {
+                // Reset if incomplete or elements missing
+                if (interpretacionTotalEl) {
+                    interpretacionTotalEl.textContent = "Complete el cuestionario";
+                    interpretacionTotalEl.className = "resultado-interpretacion";
+                }
+                 if (resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if (interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if (recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado"; // Ensure badge resets
+
+            }
+        }
+
+
+        // --- Funciones Auxiliares CSI ---
+        function getDescripcionSC(nivel) {
+          switch(nivel) {
+            case "Subclínico": return "una presencia mínima de síntomas asociados con la sensibilización del sistema nervioso central";
+            case "Leve": return "una presencia leve de síntomas relacionados con la sensibilización central, que podrían estar comenzando a afectar la vida diaria";
+            case "Moderado": return "una clara evidencia de sensibilización central que probablemente esté contribuyendo significativamente a la condición del paciente y afectando su funcionalidad (Punto de corte ≥40)";
+            case "Severo": return "un alto grado de sensibilización central que probablemente sea un factor determinante en la condición del paciente, con impacto sustancial en múltiples áreas de la vida";
+            case "Extremo": return "un grado extremo de sensibilización central con manifestaciones generalizadas y profundo impacto en la calidad de vida y funcionalidad";
+            default: return "";
+          }
+        }
+        function obtenerDiagnosticosTexto(diagnosticos) {
+          const nombresdiagnosticos = [
+            "fibromialgia", "síndrome de fatiga crónica", "trastorno temporomandibular",
+            "migrañas o cefaleas tensionales", "síndrome de intestino irritable",
+            "reflujo o dolor torácico no cardíaco", "vejiga irritable o cistitis intersticial",
+            "sensibilidad a químicos/medicamentos", "lesión de cuello (incluyendo latigazo)",
+            "ansiedad o ataques de pánico"
+          ];
+          const seleccionados = diagnosticos.map((seleccionado, index) => seleccionado ? nombresdiagnosticos[index] : null).filter(Boolean);
+
+          if (seleccionados.length === 0) return "ninguno";
+          if (seleccionados.length === 1) return seleccionados[0];
+
+          const ultimoDiagnostico = seleccionados.pop();
+          return `${seleccionados.join(', ')} y ${ultimoDiagnostico}`;
+        }
+        // --- Fin Funciones Auxiliares CSI ---
+
+        // Función para calcular el Inventario de Sensibilización Central (CSI)
+        function calcularCSI() {
+            let valoresItems = [];
+            let itemsCompletados = 0;
+
+            for (let i = 1; i <= 25; i++) {
+                const itemValue = document.querySelector(`input[name="csi_item${i}"]:checked`)?.value;
+                if (itemValue !== undefined) {
+                    valoresItems.push(parseInt(itemValue));
+                    itemsCompletados++;
+                } else {
+                    valoresItems.push(0); // Assume 0 if not answered for calculation
+                }
+            }
+
+            // El CSI se considera completo si al menos 23/25 (aprox 90%) preguntas están respondidas
+            const completo = itemsCompletados >= 23;
+            const puntuacionA = valoresItems.reduce((sum, val) => sum + val, 0);
+
+            const diagnosticos = [
+                document.getElementById('csi_fibromialgia')?.checked, document.getElementById('csi_sindrome_fatiga')?.checked,
+                document.getElementById('csi_tmd')?.checked, document.getElementById('csi_migranas')?.checked,
+                document.getElementById('csi_sii')?.checked, document.getElementById('csi_reflujo')?.checked,
+                document.getElementById('csi_vejiga')?.checked, document.getElementById('csi_quimico')?.checked,
+                document.getElementById('csi_lesion_cuello')?.checked, document.getElementById('csi_ansiedad')?.checked
+            ];
+            const numeroDiagnosticos = diagnosticos.filter(Boolean).length;
+
+            // Update UI Elements safely
+            const badge = document.getElementById('csi-badge');
+            const valorAEl = document.getElementById('csi-valor-a');
+            const valorBEl = document.getElementById('csi-valor-b');
+            const interpretacionAEl = document.getElementById('csi-interpretacion-a');
+            const interpretacionBEl = document.getElementById('csi-interpretacion-b');
+            const resultadoContainer = document.getElementById('csi-resultado');
+            const interpretacionClinicaEl = document.getElementById('csi-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('csi-recomendaciones');
+
+            if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado";
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde");
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+             if(valorAEl) valorAEl.textContent = `${puntuacionA}/100`;
+             if(valorBEl) valorBEl.textContent = `${numeroDiagnosticos}/10`;
+
+            if (completo && interpretacionAEl && interpretacionBEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                 let nivelSC = "";
+                 let colorClass = "";
+                if (puntuacionA < 30) { nivelSC = "Subclínico"; colorClass="leve"; interpretacionAEl.textContent = "Sensibilización central subclínica"; interpretacionAEl.className = "resultado-interpretacion verde"; }
+                else if (puntuacionA < 40) { nivelSC = "Leve"; colorClass="leve"; interpretacionAEl.textContent = "Sensibilización central leve"; interpretacionAEl.className = "resultado-interpretacion verde-claro"; }
+                else if (puntuacionA < 50) { nivelSC = "Moderado"; colorClass="moderado"; interpretacionAEl.textContent = "Sensibilización central moderada (≥40)"; interpretacionAEl.className = "resultado-interpretacion amarillo"; }
+                else if (puntuacionA < 60) { nivelSC = "Severo"; colorClass="severo"; interpretacionAEl.textContent = "Sensibilización central severa"; interpretacionAEl.className = "resultado-interpretacion rojo"; }
+                else { nivelSC = "Extremo"; colorClass="severo"; interpretacionAEl.textContent = "Sensibilización central extrema"; interpretacionAEl.className = "resultado-interpretacion rojo"; }
+                resultadoContainer.className = `resultado-container nivel-${colorClass}`;
+
+                if (numeroDiagnosticos === 0) interpretacionBEl.textContent = "Sin diagnósticos relacionados";
+                else if (numeroDiagnosticos === 1) interpretacionBEl.textContent = "1 diagnóstico relacionado";
+                else interpretacionBEl.textContent = `${numeroDiagnosticos} diagnósticos relacionados`;
+
+                const diagnosticosTexto = obtenerDiagnosticosTexto(diagnosticos);
+                interpretacionClinicaEl.innerHTML = `
+                    <p>El paciente presenta un nivel <strong>${nivelSC.toLowerCase()}</strong> de sensibilización central (Parte A: ${puntuacionA}/100), lo que sugiere ${getDescripcionSC(nivelSC)}.</p>
+                    ${numeroDiagnosticos > 0 ?
+                    `
+                    <p>Además, refiere ${numeroDiagnosticos} ${numeroDiagnosticos === 1 ? 'diagnóstico previo relacionado' : 'diagnósticos previos relacionados'} con síndromes de sensibilización central: ${diagnosticosTexto}.</p>
+                    <p>La presencia de estos diagnósticos ${numeroDiagnosticos > 2 ? 'múltiples ' : ''}aumenta la probabilidad de que los mecanismos de sensibilización central estén contribuyendo a la presentación clínica actual.</p>
+                    ` : '<p>No se reportan diagnósticos previos relacionados con síndromes de sensibilización central.</p>'}
+                    <p>La sensibilización central implica una amplificación de la señalización neural dentro del sistema nervioso central que provoca hipersensibilidad al dolor y procesamiento sensorial alterado.</p>`;
+
+                 // Recomendaciones (similar a como estaban antes)
+                  if (nivelSC === "Subclínico" || nivelSC === "Leve") {
+                    recomendacionesEl.innerHTML = `
+                        <p>Con un nivel ${nivelSC.toLowerCase()} de sensibilización central, se recomienda:</p>
+                        <ul>
+                          <li>Educación en neurociencia del dolor para entender los mecanismos de sensibilización (nivel de evidencia 1A)</li>
+                          <li>Ejercicio terapéutico de intensidad moderada, priorizando actividades no provocadoras de dolor (nivel de evidencia 1A)</li>
+                          <li>Técnicas de desensibilización gradual para normalizar el procesamiento sensorial (nivel de evidencia 1B)</li>
+                          <li>Terapia manual no agresiva con enfoque en reducir la hiperalgesia (nivel de evidencia 1B)</li>
+                          <li>Estrategias de autorregulación como respiración diafragmática y relajación muscular progresiva (nivel de evidencia 1B)</li>
+                          <li>Monitorización regular de los síntomas para detectar cambios (nivel de evidencia 2A)</li>
+                        </ul>`;
+                 } else if (nivelSC === "Moderado") { // ≥ 40 es clínicamente relevante
+                     recomendacionesEl.innerHTML = `
+                        <p>Con un nivel moderado de sensibilización central (≥40), se recomienda:</p>
+                        <ul>
+                          <li>Programa estructurado de educación en neurociencia del dolor (nivel de evidencia 1A)</li>
+                          <li>Ejercicio terapéutico progresivo con exposición gradual, priorizando actividades aeróbicas de baja intensidad (nivel de evidencia 1A)</li>
+                          <li>Técnicas de extinción del miedo al movimiento (nivel de evidencia 1B)</li>
+                          <li>Desensibilización sistemática para hipersensibilidad sensorial (nivel de evidencia 1B)</li>
+                          <li>Entrenamiento en mindfulness para reducir hipervigilancia (nivel de evidencia 1B)</li>
+                          <li>Abordaje de factores contextuales (sueño, estrés, patrones de actividad) que pueden perpetuar la sensibilización (nivel de evidencia 1A)</li>
+                          <li>Considerar derivación a especialista en dolor si no hay mejoría en 4-6 semanas (nivel de evidencia 2A)</li>
+                        </ul>`;
+                 } else { // Severo o Extremo
+                     recomendacionesEl.innerHTML = `
+                        <p>Con un nivel ${nivelSC.toLowerCase()} de sensibilización central, se recomienda:</p>
+                        <ul>
+                          <li>Abordaje interdisciplinar con participación de especialista en dolor (nivel de evidencia 1A)</li>
+                          <li>Programa intensivo de educación en neurociencia del dolor (nivel de evidencia 1A)</li>
+                          <li>Exposición gradual muy cuidadosa a estímulos que provocan dolor, monitorizando respuestas (nivel de evidencia 1A)</li>
+                          <li>Terapia de aceptación y compromiso para reducir el impacto de la hipersensibilidad (nivel de evidencia 1A)</li>
+                          <li>Programa de actividad física individualizado con progresión muy gradual (nivel de evidencia 1A)</li>
+                          <li>Técnicas específicas para regular el sistema nervioso autónomo (nivel de evidencia 1B)</li>
+                          <li>Estrategias de gestión del sueño (nivel de evidencia 1A)</li>
+                          <li>Intervenciones para reducir el estrés y la ansiedad (nivel de evidencia 1A)</li>
+                          <li>Plan de tratamiento a largo plazo con objetivos funcionales realistas (nivel de evidencia 1A)</li>
+                          <li>Considerar derivación para evaluación de tratamiento farmacológico dirigido a mecanismos de sensibilización central (nivel de evidencia 1A)</li>
+                        </ul>`;
+                 }
+
+            } else {
+                // Reset if incomplete or elements missing
+                 if(interpretacionAEl) interpretacionAEl.textContent = "Complete el cuestionario";
+                 if(interpretacionBEl) interpretacionBEl.textContent = "Complete el cuestionario";
+                 if(interpretacionAEl) interpretacionAEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // --- Funciones Auxiliares TSK ---
+        function getDescripcionKinesiofobia(nivel) {
+          switch(nivel) {
+            case "Mínima": return "un bajo temor al movimiento y buena confianza en la capacidad de su cuerpo para tolerar la actividad física";
+            case "Moderada": return "cierto grado de temor al movimiento que podría estar limitando su participación en algunas actividades físicas";
+            case "Severa": return "un alto grado de temor al movimiento que probablemente está limitando significativamente su recuperación funcional y participación en actividades físicas";
+            default: return "";
+          }
+        }
+        function getPensamientosKinesiofobia(nivel) {
+          switch(nivel) {
+            case "Mínima": return "generalmente no asocia el movimiento con daño o peligro, lo que favorece una buena adherencia al ejercicio terapéutico";
+            case "Moderada": return "presenta algunas creencias de que ciertos movimientos podrían ser perjudiciales, lo que podría estar interfiriendo con su recuperación óptima";
+            case "Severa": return "tiene fuertes creencias de que el movimiento y la actividad física pueden causar daño o reinjuria, lo que está obstaculizando significativamente su progreso";
+            default: return "";
+          }
+        }
+        // --- Fin Funciones Auxiliares TSK ---
+
+        // Función para calcular la Escala de Tampa de Kinesiofobia (TSK-11)
+        function calcularTSK() {
+            let valoresItems = [];
+            let completo = true;
+            let itemsRespondidos = 0;
+
+            for (let i = 1; i <= 11; i++) {
+                const itemValue = document.querySelector(`input[name="tsk_item${i}"]:checked`)?.value;
+                if (itemValue !== undefined) {
+                    valoresItems.push(parseInt(itemValue));
+                     itemsRespondidos++;
+                } else {
+                    valoresItems.push(0); // Assume 0 if not answered
+                    completo = false;
+                }
+            }
+
+            // TSK-11 requiere que TODOS los 11 ítems estén respondidos
+            completo = itemsRespondidos === 11;
+
+            const puntuacionTotal = valoresItems.reduce((sum, val) => sum + val, 0);
+
+            // Update UI elements safely
+            const badge = document.getElementById('tsk-badge');
+            const valorEl = document.getElementById('tsk-valor');
+            const interpretacionEl = document.getElementById('tsk-interpretacion');
+            const resultadoContainer = document.getElementById('tsk-resultado');
+            const interpretacionClinicaEl = document.getElementById('tsk-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('tsk-recomendaciones');
+
+            if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado";
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde");
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+             if(valorEl) valorEl.textContent = `${puntuacionTotal}/44`;
+
+            if (completo && interpretacionEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                 let nivelKinesiofobia = "";
+                 let colorClass = "";
+                 // Cut-offs may vary, using common ones (e.g., >37 often high, but TSK-11 might differ)
+                 // Let's use terciles approximately: 11-22 (Low), 23-33 (Moderate), 34-44 (High)
+                 // Adjusting based on previous logic: <17 Min, 17-27 Mod, >27 Sev
+                 if (puntuacionTotal > 27) { // Previous logic used >27 Severa
+                     nivelKinesiofobia = "Severa";
+                     interpretacionEl.textContent = "Nivel severo de kinesiofobia (>27)";
+                     interpretacionEl.className = "resultado-interpretacion rojo";
+                     resultadoContainer.className = "resultado-container nivel-severo";
+                     colorClass="alto";
+                 } else if (puntuacionTotal >= 17) { // Previous logic used <=27 Moderada
+                     nivelKinesiofobia = "Moderada";
+                     interpretacionEl.textContent = "Nivel moderado de kinesiofobia (17-27)";
+                     interpretacionEl.className = "resultado-interpretacion amarillo";
+                     resultadoContainer.className = "resultado-container nivel-moderado";
+                     colorClass="moderado";
+                 } else { // < 17
+                     nivelKinesiofobia = "Mínima";
+                     interpretacionEl.textContent = "Nivel mínimo de kinesiofobia (<17)";
+                     interpretacionEl.className = "resultado-interpretacion verde";
+                     resultadoContainer.className = "resultado-container nivel-leve";
+                     colorClass="bajo";
+                 }
+                  if(badge) badge.className = `resultado-badge completado ${colorClass}`;
+
+
+                 interpretacionClinicaEl.innerHTML = `
+                    <p>El paciente presenta un nivel de kinesiofobia <strong>${nivelKinesiofobia.toLowerCase()}</strong> (${puntuacionTotal}/44), lo que indica ${getDescripcionKinesiofobia(nivelKinesiofobia)}.</p>
+                    <p>La kinesiofobia, o miedo al movimiento, puede influir negativamente en la recuperación funcional al limitar la participación en actividades físicas y ejercicios terapéuticos.</p>
+                    <p>Este resultado sugiere que el paciente ${getPensamientosKinesiofobia(nivelKinesiofobia)}.</p>
+                    `;
+
+                 if (nivelKinesiofobia === "Mínima") {
+                     recomendacionesEl.innerHTML = `
+                        <p>Con un nivel mínimo de kinesiofobia, se recomienda:</p>
+                        <ul>
+                            <li>Reforzar positivamente la confianza actual en el movimiento (nivel de evidencia 1A)</li>
+                            <li>Educación preventiva básica sobre conceptos erróneos del dolor (nivel de evidencia 1A)</li>
+                            <li>Prescripción de ejercicio terapéutico regular, enfatizando la progresión gradual (nivel de evidencia 1A)</li>
+                            <li>Fomentar la autogestión y participación activa en actividades funcionales (nivel de evidencia 1A)</li>
+                            <li>Monitorizar periódicamente para detectar cambios en las creencias sobre el movimiento (nivel de evidencia 2B)</li>
+                        </ul>`;
+                 } else if (nivelKinesiofobia === "Moderada") {
+                      recomendacionesEl.innerHTML = `
+                        <p>Con un nivel moderado de kinesiofobia, se recomienda:</p>
+                        <ul>
+                            <li>Implementar educación en neurociencia del dolor para abordar creencias erróneas (nivel de evidencia 1A)</li>
+                            <li>Ejercicio terapéutico con exposición gradual a movimientos temidos (nivel de evidencia 1A)</li>
+                            <li>Estrategias cognitivo-conductuales para modificar creencias sobre el daño y el dolor (nivel de evidencia 1A)</li>
+                            <li>Establecer objetivos funcionales basados en actividades significativas para el paciente (nivel de evidencia 1B)</li>
+                            <li>Implementar técnicas de imaginería motora para movimientos que generan aprensión (nivel de evidencia 1B)</li>
+                            <li>Proporcionar retroalimentación positiva durante la realización de ejercicios (nivel de evidencia 1B)</li>
+                        </ul>`;
+                 } else { // Severa
+                      recomendacionesEl.innerHTML = `
+                        <p>Con un nivel severo de kinesiofobia, se recomienda:</p>
+                        <ul>
+                            <li>Programa estructurado de educación en neurociencia del dolor (nivel de evidencia 1A)</li>
+                            <li>Intervención cognitivo-conductual específica para abordar el miedo-evitación (nivel de evidencia 1A)</li>
+                            <li>Exposición gradual muy progresiva a actividades y movimientos temidos (nivel de evidencia 1A)</li>
+                            <li>Técnicas de desensibilización sistemática (nivel de evidencia 1B)</li>
+                            <li>Establecer objetivos funcionales muy pequeños y alcanzables para construir confianza (nivel de evidencia 1A)</li>
+                            <li>Considerar abordaje multidisciplinar si no hay mejora (nivel de evidencia 1A)</li>
+                            <li>Uso de diario de exposición a movimientos para registro de expectativas vs. resultados reales (nivel de evidencia 1B)</li>
+                            <li>Técnicas de atención plena (mindfulness) para reducir la ansiedad anticipatoria (nivel de evidencia 1B)</li>
+                        </ul>`;
+                 }
+
+            } else {
+                 // Reset if incomplete or elements missing
+                  if (interpretacionEl) {
+                    interpretacionEl.textContent = "Complete el cuestionario para obtener un resultado";
+                    interpretacionEl.className = "resultado-interpretacion";
+                  }
+                  if (resultadoContainer) resultadoContainer.className = "resultado-container";
+                  if (interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                  if (recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                  if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // ***** FIN JAVASCRIPT PARTE 2 *****
+
+    // ***** INICIO JAVASCRIPT PARTE 3 *****
+
+        // Función para calcular el puntaje del DN4
+        function calcularDN4() {
+            const items = [
+                'dn4_quemazon', 'dn4_frio', 'dn4_descargas', 'dn4_hormigueo',
+                'dn4_alfileres', 'dn4_entumecimiento', 'dn4_picazon',
+                'dn4_hipoestesia', 'dn4_hipoestesia_pinchazo', 'dn4_cepillado'
+            ];
+            let puntaje = 0;
+            let respondidos = 0;
+
+            items.forEach(name => {
+                const radioChecked = document.querySelector(`input[name="${name}"]:checked`);
+                if (radioChecked) {
+                    puntaje += parseInt(radioChecked.value);
+                    respondidos++;
+                }
+            });
+
+            // Update UI elements safely
+            const valorElement = document.getElementById('dn4-valor');
+            const interpretacionElement = document.getElementById('dn4-interpretacion');
+            const interpretacionClinicaElement = document.getElementById('dn4-interpretacion-clinica');
+            const recomendacionesElement = document.getElementById('dn4-recomendaciones');
+            const badgeElement = document.getElementById('dn4-badge');
+            const resultadoContainer = document.getElementById('dn4-resultado'); // Needed for coloring
+
+            // Consider complete if all 10 are answered
+            const completo = respondidos === 10;
+
+            if (badgeElement) {
+                if (completo) {
+                    badgeElement.textContent = "Completado";
+                    badgeElement.classList.remove('no-completado');
+                    badgeElement.classList.add('completado', 'badge-verde');
+                } else {
+                    badgeElement.textContent = "No completado";
+                    badgeElement.classList.remove('completado', 'badge-verde');
+                    badgeElement.classList.add('no-completado');
+                }
+            }
+
+            if (valorElement) valorElement.textContent = `${puntaje}/10`;
+
+            if (completo && interpretacionElement && interpretacionClinicaElement && recomendacionesElement && resultadoContainer) {
+                 let colorClass = "";
+                 if (puntaje >= 4) {
+                     interpretacionElement.textContent = "Probable dolor neuropático (≥4)";
+                     interpretacionElement.className = "resultado-interpretacion rojo";
+                     colorClass = "nivel-severo"; // Use severity classes for consistency
+
+                     interpretacionClinicaElement.innerHTML = `
+                        <p>Con un puntaje de ${puntaje}/10, el paciente presenta características altamente sugestivas de dolor neuropático. El DN4 tiene una sensibilidad del 83% y una especificidad del 90% con este punto de corte.</p>
+                        <p>Las características presentes sugieren alteraciones en el procesamiento somatosensorial.</p>`;
+                     recomendacionesElement.innerHTML = `
+                        <ul>
+                          <li>Implementar electroestimulación nerviosa transcutánea (TENS) con frecuencia alta (>80 Hz) (nivel de evidencia 1B)</li>
+                          <li>Aplicar educación en neurociencia del dolor (nivel de evidencia 1A)</li>
+                          <li>Utilizar técnicas de desensibilización gradual progresiva (nivel de evidencia 1B)</li>
+                          <li>Incorporar ejercicio terapéutico de baja a moderada intensidad (nivel de evidencia 1A)</li>
+                          <li>Aplicar terapia manual no agresiva como movilización neural (nivel de evidencia 2A)</li>
+                          <li>Considerar terapia por espejo o imaginería motora graduada (nivel de evidencia 1B)</li>
+                        </ul>`;
+
+                 } else {
+                     interpretacionElement.textContent = "Dolor no neuropático (<4)";
+                     interpretacionElement.className = "resultado-interpretacion verde";
+                     colorClass = "nivel-leve";
+
+                     interpretacionClinicaElement.innerHTML = `
+                        <p>Con un puntaje de ${puntaje}/10, el paciente no presenta un patrón típico de dolor neuropático. El dolor probablemente sea de origen nociceptivo o nociplástico.</p>`;
+                     recomendacionesElement.innerHTML = `
+                        <ul>
+                          <li>Aplicar terapia manual específica según origen nociceptivo (nivel de evidencia 1A)</li>
+                          <li>Prescribir ejercicio terapéutico específico y progresivo (nivel de evidencia 1A)</li>
+                          <li>Implementar TENS en modalidad convencional (nivel de evidencia 1B)</li>
+                          <li>Aplicar termoterapia superficial según fase (nivel de evidencia 1B)</li>
+                          <li>Educación en autocuidado y manejo activo del dolor (nivel de evidencia 1A)</li>
+                          <li>Realizar reevaluación periódica para identificar cambios (nivel de evidencia 2A)</li>
+                        </ul>`;
+                 }
+                 resultadoContainer.className = `resultado-container ${colorClass}`;
+
+            } else {
+                 // Reset if incomplete or elements missing
+                 if (interpretacionElement) {
+                    interpretacionElement.textContent = "Complete el cuestionario para obtener un resultado";
+                    interpretacionElement.className = "resultado-interpretacion";
+                 }
+                  if (interpretacionClinicaElement) interpretacionClinicaElement.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                  if (recomendacionesElement) recomendacionesElement.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                  if (resultadoContainer) resultadoContainer.className = "resultado-container";
+                  if(badgeElement) badgeElement.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular NDI - Neck Disability Index
+        function calcularNDI() {
+            const items = [];
+            let itemsRespondidos = 0;
+            for (let i = 1; i <= 10; i++) {
+                const item = document.querySelector(`input[name="ndi_item${i}"]:checked`);
+                items.push(item);
+                if (item) itemsRespondidos++;
+            }
+
+            // NDI requiere que TODOS los 10 ítems estén respondidos
+            const completo = itemsRespondidos === 10;
+
+            // Update UI elements safely
+            const badge = document.getElementById('ndi-badge');
+            const valorTotalEl = document.getElementById('ndi-valor-total');
+            const valorPorcentajeEl = document.getElementById('ndi-valor-porcentaje');
+            const nivelDiscapacidadEl = document.getElementById('ndi-nivel-discapacidad');
+            const interpretacionTotalEl = document.getElementById('ndi-interpretacion-total'); // Added this line
+            const resultadoContainer = document.getElementById('ndi-resultado');
+            const interpretacionClinicaEl = document.getElementById('ndi-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('ndi-recomendaciones');
+
+            if (badge) {
+                 if (completo) {
+                     badge.textContent = "Completado"; // We will update this later with level
+                     badge.classList.remove("no-completado");
+                     badge.classList.add("completado", "badge-verde"); // Start green
+                 } else {
+                     badge.textContent = "No completado";
+                     badge.classList.remove("completado", "badge-verde");
+                     badge.classList.add("no-completado");
+                 }
+            }
+
+            if (completo && valorTotalEl && valorPorcentajeEl && nivelDiscapacidadEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let totalNDI = 0;
+                items.forEach(item => {
+                    if (item) totalNDI += parseInt(item.value);
+                });
+
+                const porcentajeNDI = (totalNDI / 50) * 100;
+                const porcentajeRedondeado = porcentajeNDI.toFixed(1);
+
+                let nivelDiscapacidad = "";
+                let colorBadge = "";
+                let colorClase = "";
+                if (porcentajeNDI <= 20) { // 0-4 points = 0-8%; 5-14 points = 10-28% -> Common practice uses 0-20% Minimal
+                    nivelDiscapacidad = "Discapacidad mínima"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (porcentajeNDI <= 40) { // 15-24 points = 30-48% -> Common practice uses 21-40% Moderate
+                    nivelDiscapacidad = "Discapacidad moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else if (porcentajeNDI <= 60) { // 25-34 points = 50-68% -> Common practice uses 41-60% Severe
+                    nivelDiscapacidad = "Discapacidad severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                } else if (porcentajeNDI <= 80) { // 35-44 points = 70-88% -> Common practice uses 61-80% Crippled
+                     nivelDiscapacidad = "Discapacidad muy severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+                 else { // 45-50 points = 90-100% -> Common practice uses >80% Bed bound
+                    nivelDiscapacidad = "Discapacidad completa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+
+
+                valorTotalEl.textContent = totalNDI + "/50";
+                valorPorcentajeEl.textContent = porcentajeRedondeado + "%";
+                nivelDiscapacidadEl.textContent = nivelDiscapacidad;
+                interpretacionTotalEl.textContent = nivelDiscapacidad; // Update interpretation text
+                 interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                 resultadoContainer.className = "resultado-container " + colorClase;
+                 if(badge) badge.textContent = nivelDiscapacidad; // Update badge text
+                 if(badge) badge.className = "resultado-badge completado " + colorBadge; // Update badge color
+
+
+                 // Generate clinical interpretation
+                let interpretacionClinica = "";
+                if (porcentajeNDI <= 20) {
+                    interpretacionClinica = `
+                        <p>Puntuación NDI de <strong>${totalNDI}/50 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad mínima</strong>.</p>
+                        <p>Impacto funcional bajo, puede realizar la mayoría de actividades. Dolor/molestias leves.</p>`;
+                } else if (porcentajeNDI <= 40) {
+                    interpretacionClinica = `
+                        <p>Puntuación NDI de <strong>${totalNDI}/50 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad moderada</strong>.</p>
+                        <p>Limitaciones funcionales significativas (posturas prolongadas, trabajo). Dolor moderado. Posible afectación de sueño/concentración.</p>`;
+                } else if (porcentajeNDI <= 60) {
+                     interpretacionClinica = `
+                        <p>Puntuación NDI de <strong>${totalNDI}/50 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad severa</strong>.</p>
+                        <p>Limitaciones importantes en la mayoría de AVD. Dificultad autocuidado. Dolor intenso. Restricciones laborales/recreativas severas.</p>`;
+                } else if (porcentajeNDI <= 80) {
+                     interpretacionClinica = `
+                        <p>Puntuación NDI de <strong>${totalNDI}/50 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad muy severa ("Crippled")</strong>.</p>
+                        <p>Limitaciones extremas. Dependencia parcial para AVD. Dolor muy intenso y constante. Impacto severo en calidad de vida.</p>`;
+                } else {
+                    interpretacionClinica = `
+                        <p>Puntuación NDI de <strong>${totalNDI}/50 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad completa ("Bed-bound")</strong>.</p>
+                        <p>Incapacidad para mayoría de actividades. Dependencia significativa. Dolor incapacitante. Considerar banderas rojas y evaluación especializada.</p>`;
+                }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Generate therapeutic recommendations
+                 let recomendationsHTML = "";
+                 if (porcentajeNDI <= 20) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Mínima):</h6>
+                        <ul>
+                            <li>Educación en higiene postural y ergonomía.</li>
+                            <li>Ejercicios de movilidad y fortalecimiento cervical preventivo.</li>
+                            <li>Técnicas de automanejo y estiramientos.</li>
+                            <li>Evaluación de factores de riesgo laborales/recreativos.</li>
+                        </ul>`;
+                 } else if (porcentajeNDI <= 40) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Moderada):</h6>
+                        <ul>
+                            <li>Terapia manual para mejorar movilidad.</li>
+                            <li>Ejercicios de control motor y estabilización cervical/escapular.</li>
+                            <li>Reeducación postural y de patrones de movimiento.</li>
+                            <li>Tratamiento de puntos gatillo y tensión miofascial.</li>
+                             <li>Adaptaciones ergonómicas y pacing de actividades.</li>
+                        </ul>`;
+                 } else { // Severe or higher
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Severa/Completa):</h6>
+                        <ul>
+                            <li>Enfoque multidisciplinario (médico, psicólogo).</li>
+                            <li>Manejo del dolor multimodal (terapia manual suave, modalidades, educación).</li>
+                            <li>Ejercicios de control motor de baja carga y progresión muy lenta.</li>
+                            <li>Neurodinámica y tratamiento de sensibilización si procede.</li>
+                            <li>Abordaje de factores psicosociales (miedo, catastrofización).</li>
+                            <li>Rehabilitación funcional gradual y adaptada.</li>
+                            <li>Considerar evaluación médica especializada para descartar patología grave.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+            } else {
+                // Reset if incomplete or elements missing
+                 if(valorTotalEl) valorTotalEl.textContent = "-/50";
+                 if(valorPorcentajeEl) valorPorcentajeEl.textContent = "-%";
+                 if(nivelDiscapacidadEl) nivelDiscapacidadEl.textContent = "-";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete el cuestionario";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular el puntaje del QuickDASH
+        function calcularQuickDASH() {
+            const items = [];
+            let itemsRespondidos = 0;
+            for (let i = 1; i <= 11; i++) {
+                const item = document.querySelector(`input[name="quickdash_item${i}"]:checked`);
+                items.push(item);
+                if (item) itemsRespondidos++;
+            }
+
+            // QuickDASH requiere al menos 10 de 11 preguntas respondidas
+            const respuestasMinimas = 10;
+            const completo = itemsRespondidos >= respuestasMinimas;
+
+            // Update UI elements safely
+            const badge = document.getElementById('quickdash-badge');
+            const valorTotalEl = document.getElementById('quickdash-valor-total');
+            const nivelDiscapacidadEl = document.getElementById('quickdash-nivel-discapacidad');
+            const interpretacionTotalEl = document.getElementById('quickdash-interpretacion-total');
+            const resultadoContainer = document.getElementById('quickdash-resultado');
+            const interpretacionClinicaEl = document.getElementById('quickdash-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('quickdash-recomendaciones');
+
+            if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado"; // Will update with level later
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde"); // Start green
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+            if (completo && valorTotalEl && nivelDiscapacidadEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let suma = 0;
+                items.forEach(item => {
+                    if (item !== null) {
+                        suma += parseInt(item.value);
+                    }
+                });
+
+                // Calcular el puntaje QuickDASH: [(suma / número de respuestas) - 1] × 25
+                const puntajeQuickDASH = ((suma / itemsRespondidos) - 1) * 25;
+                const puntajeRedondeado = puntajeQuickDASH.toFixed(1); // Keep one decimal
+
+                let nivelDiscapacidad = "";
+                let colorBadge = "";
+                let colorClase = "";
+                 // Common interpretation: <20 Minimal, 20-40 Moderate, >40 Severe (approx)
+                if (puntajeQuickDASH < 20) {
+                    nivelDiscapacidad = "Discapacidad mínima"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (puntajeQuickDASH < 40) {
+                    nivelDiscapacidad = "Discapacidad moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else {
+                    nivelDiscapacidad = "Discapacidad severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+
+                valorTotalEl.textContent = puntajeRedondeado + "/100";
+                nivelDiscapacidadEl.textContent = nivelDiscapacidad;
+                interpretacionTotalEl.textContent = nivelDiscapacidad;
+                interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                resultadoContainer.className = "resultado-container " + colorClase;
+                if(badge) badge.textContent = nivelDiscapacidad;
+                if(badge) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                 // Generate clinical interpretation
+                 let interpretacionClinica = "";
+                 if (puntajeQuickDASH < 20) {
+                     interpretacionClinica = `
+                        <p>Puntuación QuickDASH de <strong>${puntajeRedondeado}/100</strong>: <strong>Discapacidad mínima</strong>.</p>
+                        <p>Limitaciones funcionales mínimas en brazo/hombro/mano. Buen nivel funcional general.</p>`;
+                 } else if (puntajeQuickDASH < 40) {
+                     interpretacionClinica = `
+                        <p>Puntuación QuickDASH de <strong>${puntajeRedondeado}/100</strong>: <strong>Discapacidad moderada</strong>.</p>
+                        <p>Limitaciones moderadas en AVD y laborales. Dificultad con algunas tareas específicas. Requiere adaptaciones.</p>`;
+                 } else {
+                     interpretacionClinica = `
+                        <p>Puntuación QuickDASH de <strong>${puntajeRedondeado}/100</strong>: <strong>Discapacidad severa</strong>.</p>
+                        <p>Limitaciones importantes en la mayoría de AVD. Dificultad significativa en tareas básicas. Impacto notable en calidad de vida.</p>`;
+                 }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Generate therapeutic recommendations (Simplified)
+                 let recomendationsHTML = "";
+                 if (puntajeQuickDASH < 20) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Mínima):</h6>
+                        <ul>
+                            <li>Terapia manual focalizada y ejercicios específicos.</li>
+                            <li>Optimización de patrones de movimiento y ergonomía.</li>
+                            <li>Programa preventivo y de mantenimiento.</li>
+                        </ul>`;
+                 } else if (puntajeQuickDASH < 40) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Moderada):</h6>
+                        <ul>
+                            <li>Programa multimodal: Terapia manual, ejercicio terapéutico, reeducación neuromuscular.</li>
+                            <li>Fortalecimiento progresivo y estabilización escapular/hombro.</li>
+                            <li>Educación en pacing y modificación de actividades.</li>
+                        </ul>`;
+                 } else {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Severa):</h6>
+                        <ul>
+                            <li>Enfoque interdisciplinario si es necesario.</li>
+                            <li>Programa gradual con énfasis en manejo del dolor y función básica.</li>
+                            <li>Estrategias de desensibilización y exposición gradual.</li>
+                            <li>Entrenamiento funcional específico y adaptaciones.</li>
+                            <li>Abordaje de factores psicosociales si existen.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else {
+                // Reset if incomplete or elements missing
+                 if(valorTotalEl) valorTotalEl.textContent = "-/100";
+                 if(nivelDiscapacidadEl) nivelDiscapacidadEl.textContent = "-";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete al menos 10 preguntas";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                  if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular el puntaje del SPADI
+        function calcularSPADI() {
+            const itemsDolorRefs = [];
+            let dolorRespondidos = 0;
+            for (let i = 1; i <= 5; i++) {
+                const item = document.querySelector(`input[name="spadi_dolor${i}"]:checked`);
+                itemsDolorRefs.push(item);
+                if (item) dolorRespondidos++;
+            }
+
+            const itemsDiscapacidadRefs = [];
+            let discapacidadRespondidos = 0;
+            for (let i = 1; i <= 8; i++) {
+                const item = document.querySelector(`input[name="spadi_discap${i}"]:checked`);
+                itemsDiscapacidadRefs.push(item);
+                if (item) discapacidadRespondidos++;
+            }
+
+            const totalRespondidos = dolorRespondidos + discapacidadRespondidos;
+            // SPADI requires at least 10/13 items (~80%)
+            const respuestasMinimas = 10;
+            const completo = totalRespondidos >= respuestasMinimas;
+
+             // Update UI elements safely
+            const badge = document.getElementById('spadi-badge');
+            const valorTotalEl = document.getElementById('spadi-valor-total');
+            const valorDolorEl = document.getElementById('spadi-valor-dolor');
+            const valorDiscapacidadEl = document.getElementById('spadi-valor-discapacidad');
+            const interpretacionTotalEl = document.getElementById('spadi-interpretacion-total');
+            const resultadoContainer = document.getElementById('spadi-resultado');
+            const interpretacionClinicaEl = document.getElementById('spadi-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('spadi-recomendaciones');
+
+             if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado"; // Will update later
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde");
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+            if (completo && valorTotalEl && valorDolorEl && valorDiscapacidadEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let sumaDolor = 0;
+                itemsDolorRefs.forEach(item => { if (item) sumaDolor += parseInt(item.value); });
+                const puntuacionDolor = dolorRespondidos > 0 ? (sumaDolor / (dolorRespondidos * 10)) * 100 : 0;
+
+                let sumaDiscapacidad = 0;
+                itemsDiscapacidadRefs.forEach(item => { if (item) sumaDiscapacidad += parseInt(item.value); });
+                const puntuacionDiscapacidad = discapacidadRespondidos > 0 ? (sumaDiscapacidad / (discapacidadRespondidos * 10)) * 100 : 0;
+
+                // Total score is the average only if BOTH subscales have enough responses
+                // SPADI validity often requires >2 items per subscale answered, let's assume our 80% overall check is sufficient for now
+                const puntuacionTotal = (puntuacionDolor + puntuacionDiscapacidad) / 2;
+                const puntuacionRedondeada = puntuacionTotal.toFixed(1);
+
+                let nivelAfectacion = "";
+                let colorBadge = "";
+                let colorClase = "";
+                // Interpretation: <30 Mild, 30-60 Moderate, >60 Severe (common ranges)
+                if (puntuacionTotal < 30) {
+                    nivelAfectacion = "Afectación leve"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (puntuacionTotal < 60) {
+                    nivelAfectacion = "Afectación moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else {
+                    nivelAfectacion = "Afectación severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+
+                valorTotalEl.textContent = puntuacionRedondeada + "/100";
+                valorDolorEl.textContent = puntuacionDolor.toFixed(1) + "%";
+                valorDiscapacidadEl.textContent = puntuacionDiscapacidad.toFixed(1) + "%";
+                interpretacionTotalEl.textContent = nivelAfectacion;
+                 interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                 resultadoContainer.className = "resultado-container " + colorClase;
+                 if(badge) badge.textContent = nivelAfectacion;
+                 if(badge) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                // Clinical Interpretation
+                let interpretacionClinica = "";
+                const diff = Math.abs(puntuacionDolor - puntuacionDiscapacidad);
+                const diffText = diff > 15 ? ` Muestra una discrepancia significativa (${diff.toFixed(1)}pts).` : ` Muestra coherencia entre dolor y discapacidad.`;
+
+                 if (puntuacionTotal < 30) {
+                     interpretacionClinica = `
+                        <p>Puntuación SPADI de <strong>${puntuacionRedondeada}/100</strong>: <strong>Afectación leve</strong> (Dolor ${puntuacionDolor.toFixed(1)}%, Discapacidad ${puntuacionDiscapacidad.toFixed(1)}%).</p>
+                        <p>Molestias leves/moderadas con buena funcionalidad general. Limitaciones en actividades específicas de hombro.${diffText}</p>`;
+                 } else if (puntuacionTotal < 60) {
+                     interpretacionClinica = `
+                        <p>Puntuación SPADI de <strong>${puntuacionRedondeada}/100</strong>: <strong>Afectación moderada</strong> (Dolor ${puntuacionDolor.toFixed(1)}%, Discapacidad ${puntuacionDiscapacidad.toFixed(1)}%).</p>
+                        <p>Dolor significativo que interfiere con varias AVD. Limitaciones funcionales moderadas (elevación, fuerza, autocuidado).${diffText}</p>`;
+                 } else {
+                     interpretacionClinica = `
+                        <p>Puntuación SPADI de <strong>${puntuacionRedondeada}/100</strong>: <strong>Afectación severa</strong> (Dolor ${puntuacionDolor.toFixed(1)}%, Discapacidad ${puntuacionDiscapacidad.toFixed(1)}%).</p>
+                        <p>Dolor intenso con limitaciones sustanciales en función diaria. Dificultades importantes en autocuidado y AVD. Impacto emocional probable.${diffText}</p>`;
+                 }
+                interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified)
+                 let recomendationsHTML = "";
+                 if (puntuacionTotal < 30) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Leve):</h6>
+                        <ul>
+                            <li>Terapia manual específica, ejercicios de estabilización escapular/control motor.</li>
+                            <li>Reentrenamiento de patrones de movimiento, fortalecimiento manguito rotador.</li>
+                            <li>Educación en biomecánica y ergonomía.</li>
+                        </ul>`;
+                 } else if (puntuacionTotal < 60) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Moderada):</h6>
+                        <ul>
+                            <li>Programa multimodal (manual + ejercicio activo).</li>
+                            <li>Movilización articular, reeducación neuromuscular escapulohumeral.</li>
+                            <li>Entrenamiento excéntrico, propioceptivo, funcional.</li>
+                            <li>Educación en pacing y modificación de actividades.</li>
+                        </ul>`;
+                 } else {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Severa):</h6>
+                        <ul>
+                            <li>Enfoque interdisciplinario si es necesario.</li>
+                            <li>Manejo del dolor multimodal, terapia manual gentil.</li>
+                            <li>Ejercicio terapéutico muy gradual, entrenamiento funcional adaptado.</li>
+                            <li>Estrategias de desensibilización, considerar órtesis/ayudas.</li>
+                             <li>Abordaje de factores psicosociales.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else {
+                // Reset if incomplete or elements missing
+                 if(valorTotalEl) valorTotalEl.textContent = "-/100";
+                 if(valorDolorEl) valorDolorEl.textContent = "-%";
+                 if(valorDiscapacidadEl) valorDiscapacidadEl.textContent = "-%";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete al menos 10 preguntas";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+
+        // ***** FIN JAVASCRIPT PARTE 3 *****
+    // ***** INICIO JAVASCRIPT PARTE 4 *****
+
+        // Función para calcular el Índice de Discapacidad de Oswestry (ODI)
+        function calcularOswestry() {
+            const items = [];
+            let itemsRespondidos = 0;
+            for (let i = 1; i <= 10; i++) {
+                const item = document.querySelector(`input[name="oswestry_item${i}"]:checked`);
+                items.push(item);
+                if (item) itemsRespondidos++;
+            }
+
+            // ODI requiere al menos 8/10 ítems respondidos
+            const respuestasMinimas = 8;
+            const completo = itemsRespondidos >= respuestasMinimas;
+
+            // Update UI elements safely
+            const badge = document.getElementById('oswestry-badge');
+            const valorTotalEl = document.getElementById('oswestry-valor-total');
+            const valorPorcentajeEl = document.getElementById('oswestry-valor-porcentaje');
+            const nivelDiscapacidadEl = document.getElementById('oswestry-nivel-discapacidad');
+            const interpretacionTotalEl = document.getElementById('oswestry-interpretacion-total');
+            const resultadoContainer = document.getElementById('oswestry-resultado');
+            const interpretacionClinicaEl = document.getElementById('oswestry-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('oswestry-recomendaciones');
+
+            let mensajeIncompleto = completo ? "" : " (incompleto)";
+
+             if (badge) {
+                if (completo) {
+                    badge.textContent = "Completado"; // Will update later
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde"); // Start green
+                } else {
+                    badge.textContent = "No completado";
+                    badge.classList.remove("completado", "badge-verde");
+                    badge.classList.add("no-completado");
+                }
+            }
+
+            if (completo && valorTotalEl && valorPorcentajeEl && nivelDiscapacidadEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let suma = 0;
+                items.forEach(item => { if (item) suma += parseInt(item.value); });
+
+                const puntuacionMaximaPosible = itemsRespondidos * 5;
+                const porcentajeDiscapacidad = (suma / puntuacionMaximaPosible) * 100;
+                const porcentajeRedondeado = porcentajeDiscapacidad.toFixed(1);
+
+                let nivelDiscapacidad = "";
+                let colorBadge = "";
+                let colorClase = "";
+                // ODI interpretation ranges (0-20% Minimal, 21-40% Moderate, 41-60% Severe, 61-80% Crippled, 81-100% Bed-bound)
+                if (porcentajeDiscapacidad <= 20) {
+                    nivelDiscapacidad = "Discapacidad mínima"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (porcentajeDiscapacidad <= 40) {
+                    nivelDiscapacidad = "Discapacidad moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else if (porcentajeDiscapacidad <= 60) {
+                    nivelDiscapacidad = "Discapacidad severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                } else if (porcentajeDiscapacidad <= 80) {
+                    nivelDiscapacidad = "Discapacidad muy severa"; colorBadge = "alto"; colorClase = "nivel-severo"; // Often grouped with severe
+                } else {
+                    nivelDiscapacidad = "Discapacidad extrema"; colorBadge = "alto"; colorClase = "nivel-severo"; // Often grouped with severe
+                }
+
+                valorTotalEl.textContent = `${suma}/${puntuacionMaximaPosible}${mensajeIncompleto}`;
+                valorPorcentajeEl.textContent = porcentajeRedondeado + "%";
+                nivelDiscapacidadEl.textContent = nivelDiscapacidad;
+                interpretacionTotalEl.textContent = nivelDiscapacidad;
+                interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                resultadoContainer.className = "resultado-container " + colorClase;
+                if(badge) badge.textContent = nivelDiscapacidad;
+                if(badge) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                // Clinical Interpretation
+                 let interpretacionClinica = "";
+                 if (porcentajeDiscapacidad <= 20) {
+                     interpretacionClinica = `
+                        <p>Puntuación ODI de <strong>${porcentajeRedondeado}%</strong>: <strong>Discapacidad mínima</strong>.</p>
+                        <p>Puede realizar la mayoría de AVD. Dolor leve que no interfiere significativamente. Buen pronóstico.</p>`;
+                 } else if (porcentajeDiscapacidad <= 40) {
+                     interpretacionClinica = `
+                        <p>Puntuación ODI de <strong>${porcentajeRedondeado}%</strong>: <strong>Discapacidad moderada</strong>.</p>
+                        <p>Dificultades en AVD (sentarse, levantarse, trabajo). Dolor significativo. Posibles alteraciones sueño/vida social.</p>`;
+                 } else if (porcentajeDiscapacidad <= 60) {
+                     interpretacionClinica = `
+                        <p>Puntuación ODI de <strong>${porcentajeRedondeado}%</strong>: <strong>Discapacidad severa</strong>.</p>
+                        <p>Limitaciones importantes en AVD. Dolor intenso es problema principal. Dificultades en autocuidado, sueño. Vida social restringida.</p>`;
+                 } else { // Muy severa / Extrema
+                     interpretacionClinica = `
+                        <p>Puntuación ODI de <strong>${porcentajeRedondeado}%</strong>: <strong>${nivelDiscapacidad}</strong>.</p>
+                        <p>Limitaciones extremas en todas las áreas. Dolor incapacitante. Movilidad severamente comprometida. Posible dependencia. Requiere abordaje intensivo.</p>`;
+                 }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified)
+                 let recomendationsHTML = "";
+                 if (porcentajeDiscapacidad <= 20) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Mínima):</h6>
+                        <ul>
+                            <li>Ejercicios de control motor lumbopélvico y estabilización.</li>
+                            <li>Educación en ergonomía y mecánica corporal.</li>
+                            <li>Terapia manual específica si hay hallazgos.</li>
+                            <li>Programa preventivo y de autogestión.</li>
+                        </ul>`;
+                 } else if (porcentajeDiscapacidad <= 40) {
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Moderada):</h6>
+                        <ul>
+                            <li>Programa multimodal (manual + ejercicio).</li>
+                            <li>Ejercicios progresivos de fortalecimiento y control motor.</li>
+                            <li>Reeducación postural y de patrones de movimiento.</li>
+                             <li>Educación en neurociencia del dolor y estrategias activas.</li>
+                             <li>Pacing de actividades y ergonomía.</li>
+                        </ul>`;
+                 } else { // Severa o mayor
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Severa/Extrema):</h6>
+                        <ul>
+                            <li>Abordaje multidisciplinario (médico, psicólogo).</li>
+                             <li>Manejo del dolor multimodal.</li>
+                             <li>Ejercicio terapéutico muy gradual y supervisado.</li>
+                             <li>Intervenciones cognitivo-conductuales (miedo-evitación).</li>
+                             <li>Exposición gradual a actividades.</li>
+                             <li>Educación intensiva y estrategias de autogestión avanzadas.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+            } else {
+                // Reset if incomplete or elements missing
+                 if(valorTotalEl) valorTotalEl.textContent = "-/-";
+                 if(valorPorcentajeEl) valorPorcentajeEl.textContent = "-%";
+                 if(nivelDiscapacidadEl) nivelDiscapacidadEl.textContent = "-";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete al menos 8 preguntas";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular el Cuestionario de Discapacidad de Roland Morris (RMDQ)
+        function calcularRolandMorris() {
+            let puntuacionTotal = 0;
+            let interaccionUsuario = false; // Check if any box is checked
+
+            for (let i = 1; i <= 24; i++) {
+                const item = document.getElementById(`rolandmorris_item${i}`);
+                if (item && item.checked) {
+                    puntuacionTotal++;
+                    interaccionUsuario = true;
+                } else if (item && !item.checked){
+                     // Check if *any* box has been interacted with (even if unchecked later)
+                     // This check might be too simple; ideally check if *at least one* is checked
+                     // For simplicity, we'll rely on puntuacionTotal > 0 or if any box *exists*
+                     if (item) interaccionUsuario = true; // If the element exists, assume potential interaction
+                }
+            }
+
+             // RMDQ is considered complete if the function runs and elements exist.
+             // Score of 0 is valid.
+             const completo = true; // Assume complete if function runs
+
+             // Update UI elements safely
+            const badge = document.getElementById('rolandmorris-badge');
+            const valorTotalEl = document.getElementById('rolandmorris-valor-total');
+            const valorPorcentajeEl = document.getElementById('rolandmorris-valor-porcentaje');
+            const nivelDiscapacidadEl = document.getElementById('rolandmorris-nivel-discapacidad');
+            const interpretacionTotalEl = document.getElementById('rolandmorris-interpretacion-total');
+            const resultadoContainer = document.getElementById('rolandmorris-resultado');
+            const interpretacionClinicaEl = document.getElementById('rolandmorris-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('rolandmorris-recomendaciones');
+
+             // Calculate percentage
+             const porcentaje = (puntuacionTotal / 24) * 100;
+             const porcentajeRedondeado = porcentaje.toFixed(1);
+
+            // Determine disability level and colors
+            let nivelDiscapacidad = "";
+            let colorBadge = "";
+            let colorClase = "";
+             // RMDQ Interpretation: Often uses terciles or specific cutoffs.
+             // Let's use approximate terciles: 0-7 (Mild), 8-16 (Moderate), 17-24 (Severe)
+             if (puntuacionTotal <= 7) {
+                 nivelDiscapacidad = "Discapacidad leve"; colorBadge = "bajo"; colorClase = "nivel-leve";
+             } else if (puntuacionTotal <= 16) {
+                 nivelDiscapacidad = "Discapacidad moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+             } else {
+                 nivelDiscapacidad = "Discapacidad severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+             }
+
+            // Update UI only if elements exist
+            if (badge) {
+                 badge.textContent = nivelDiscapacidad; // RMDQ score 0 is valid, so always show level
+                 badge.classList.remove("no-completado");
+                 badge.classList.add("completado", colorBadge);
+            }
+             if(valorTotalEl) valorTotalEl.textContent = puntuacionTotal + "/24";
+             if(valorPorcentajeEl) valorPorcentajeEl.textContent = porcentajeRedondeado + "%";
+             if(nivelDiscapacidadEl) nivelDiscapacidadEl.textContent = nivelDiscapacidad;
+             if(interpretacionTotalEl) {
+                 interpretacionTotalEl.textContent = nivelDiscapacidad;
+                 interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+             }
+             if(resultadoContainer) resultadoContainer.className = "resultado-container " + colorClase;
+
+             if(interpretacionClinicaEl && recomendacionesEl){
+                 // Clinical Interpretation
+                 let interpretacionClinica = "";
+                 if (puntuacionTotal <= 7) {
+                     interpretacionClinica = `
+                        <p>Puntuación RMDQ de <strong>${puntuacionTotal}/24 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad leve</strong>.</p>
+                        <p>Limitaciones funcionales específicas pero realiza la mayoría de AVD. Dolor leve/moderado. Buen pronóstico.</p>`;
+                 } else if (puntuacionTotal <= 16) {
+                     interpretacionClinica = `
+                        <p>Puntuación RMDQ de <strong>${puntuacionTotal}/24 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad moderada</strong>.</p>
+                        <p>Limitaciones significativas en AVD (sentarse, caminar, tareas). Posibles adaptaciones/compensaciones. Requiere enfoque estructurado.</p>`;
+                 } else {
+                     interpretacionClinica = `
+                        <p>Puntuación RMDQ de <strong>${puntuacionTotal}/24 (${porcentajeRedondeado}%)</strong>: <strong>Discapacidad severa</strong>.</p>
+                        <p>Limitaciones importantes en mayoría de AVD. Dificultad en autocuidado, movilidad. Posibles factores psicosociales. Requiere abordaje intensivo.</p>`;
+                 }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified)
+                 let recomendationsHTML = "";
+                  if (puntuacionTotal <= 7) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Leve):</h6>
+                        <ul>
+                            <li>Ejercicios de control motor lumbopélvico y estabilización.</li>
+                            <li>Educación en ergonomía y mecánica corporal.</li>
+                            <li>Terapia manual específica si hay hallazgos.</li>
+                            <li>Programa preventivo y de autogestión.</li>
+                        </ul>`;
+                 } else if (puntuacionTotal <= 16) {
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Moderada):</h6>
+                        <ul>
+                            <li>Programa multimodal (manual + ejercicio).</li>
+                            <li>Ejercicios progresivos de fortalecimiento y control motor.</li>
+                            <li>Reeducación postural y de patrones de movimiento.</li>
+                             <li>Educación en neurociencia del dolor y estrategias activas.</li>
+                             <li>Pacing de actividades y ergonomía.</li>
+                        </ul>`;
+                 } else { // Severa
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Discapacidad Severa):</h6>
+                        <ul>
+                            <li>Abordaje multidisciplinario (médico, psicólogo).</li>
+                             <li>Manejo del dolor multimodal.</li>
+                             <li>Ejercicio terapéutico muy gradual y supervisado.</li>
+                             <li>Intervenciones cognitivo-conductuales (miedo-evitación).</li>
+                             <li>Exposición gradual a actividades.</li>
+                             <li>Educación intensiva y estrategias de autogestión avanzadas.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+             }
+        }
+
+
+        // Función para calcular el Índice WOMAC
+        function calcularWOMAC() {
+            const categorias = {
+                dolor: { items: ["womac_a1", "womac_a2", "womac_a3", "womac_a4", "womac_a5"], maxScore: 20 },
+                rigidez: { items: ["womac_b1", "womac_b2"], maxScore: 8 },
+                funcion: { items: ["womac_c1", "womac_c2", "womac_c3", "womac_c4", "womac_c5", "womac_c6", "womac_c7", "womac_c8", "womac_c9", "womac_c10", "womac_c11", "womac_c12", "womac_c13", "womac_c14", "womac_c15", "womac_c16", "womac_c17"], maxScore: 68 }
+            };
+
+            const puntuaciones = {};
+            const itemsRespondidos = {};
+            let totalRespondidos = 0;
+            let interaccionUsuario = false;
+
+            for (const [categoria, data] of Object.entries(categorias)) {
+                puntuaciones[categoria] = 0;
+                itemsRespondidos[categoria] = 0;
+                for (const item of data.items) {
+                    const valor = document.querySelector(`input[name="${item}"]:checked`)?.value;
+                    if (valor !== undefined) {
+                        puntuaciones[categoria] += parseInt(valor);
+                        itemsRespondidos[categoria]++;
+                        totalRespondidos++;
+                        interaccionUsuario = true; // Mark interaction if any item is selected
+                    }
+                }
+            }
+
+             // Update UI elements safely
+            const badge = document.getElementById('womac-badge');
+            const valorTotalEl = document.getElementById('womac-valor-total');
+            const valorDolorEl = document.getElementById('womac-valor-dolor');
+            const valorRigidezEl = document.getElementById('womac-valor-rigidez');
+            const valorFuncionEl = document.getElementById('womac-valor-funcion');
+            const interpretacionTotalEl = document.getElementById('womac-interpretacion-total');
+            const resultadoContainer = document.getElementById('womac-resultado');
+            const interpretacionClinicaEl = document.getElementById('womac-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('womac-recomendaciones');
+
+             // WOMAC needs >= 80% of items responded for valid score (~20/24)
+             const respuestasMinimas = 20;
+             const completo = totalRespondidos >= respuestasMinimas;
+             let mensajeIncompleto = completo ? "" : " (incompleto)";
+
+             if (badge) {
+                if (completo || interaccionUsuario) { // Show badge if user interacted, even if incomplete
+                     badge.textContent = "Completado"; // Will update later
+                     badge.classList.remove("no-completado");
+                     badge.classList.add("completado", "badge-verde"); // Start green
+                 }
+                 if (!completo && interaccionUsuario) { // Add incomplete warning
+                     badge.textContent = "Incompleto";
+                     badge.classList.remove("badge-verde");
+                     badge.classList.add("no-completado"); // Make it grey/default
+                 }
+                  if (!interaccionUsuario) { // Reset if no interaction
+                      badge.textContent = "No completado";
+                      badge.classList.remove("completado", "badge-verde");
+                      badge.classList.add("no-completado");
+                  }
+            }
+
+            if ( (completo || interaccionUsuario) && valorTotalEl && valorDolorEl && valorRigidezEl && valorFuncionEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl ) {
+                // Calculate normalized scores (0-100, 0 = best, 100 = worst)
+                const normDolor = itemsRespondidos.dolor > 0 ? (puntuaciones.dolor / (itemsRespondidos.dolor * 4)) * 100 : 0;
+                const normRigidez = itemsRespondidos.rigidez > 0 ? (puntuaciones.rigidez / (itemsRespondidos.rigidez * 4)) * 100 : 0;
+                const normFuncion = itemsRespondidos.funcion > 0 ? (puntuaciones.funcion / (itemsRespondidos.funcion * 4)) * 100 : 0;
+
+                // Total score: Simple average of the three normalized subscales if they have data
+                let numValidSubscales = 0;
+                let sumValidSubscales = 0;
+                if(itemsRespondidos.dolor > 0) { sumValidSubscales += normDolor; numValidSubscales++; }
+                if(itemsRespondidos.rigidez > 0) { sumValidSubscales += normRigidez; numValidSubscales++; }
+                if(itemsRespondidos.funcion > 0) { sumValidSubscales += normFuncion; numValidSubscales++; }
+                const normTotal = numValidSubscales > 0 ? sumValidSubscales / numValidSubscales : 0;
+                const totalPuntajeCrudo = puntuaciones.dolor + puntuaciones.rigidez + puntuaciones.funcion;
+                const maxPuntajePosible = (itemsRespondidos.dolor + itemsRespondidos.rigidez + itemsRespondidos.funcion) * 4;
+
+                valorTotalEl.textContent = `${totalPuntajeCrudo}/${maxPuntajePosible} (${normTotal.toFixed(1)}%)${mensajeIncompleto}`;
+                valorDolorEl.textContent = `${puntuaciones.dolor}/${itemsRespondidos.dolor*4} (${normDolor.toFixed(1)}%)`;
+                valorRigidezEl.textContent = `${puntuaciones.rigidez}/${itemsRespondidos.rigidez*4} (${normRigidez.toFixed(1)}%)`;
+                valorFuncionEl.textContent = `${puntuaciones.funcion}/${itemsRespondidos.funcion*4} (${normFuncion.toFixed(1)}%)`;
+
+                let nivelAfectacion = "";
+                let colorBadge = "";
+                let colorClase = "";
+                 // Interpretation based on normalized total score (0=best, 100=worst)
+                if (normTotal < 30) {
+                    nivelAfectacion = "Afectación leve"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (normTotal < 60) {
+                    nivelAfectacion = "Afectación moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else {
+                    nivelAfectacion = "Afectación severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+
+                interpretacionTotalEl.textContent = completo ? nivelAfectacion : "Incompleto";
+                interpretacionTotalEl.className = `resultado-interpretacion ${completo ? colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo") : ''}`;
+                resultadoContainer.className = "resultado-container " + (completo ? colorClase : '');
+                if(badge && (completo || interaccionUsuario)) badge.textContent = completo ? nivelAfectacion : "Incompleto";
+                if(badge && completo) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                // Clinical Interpretation
+                let interpretacionClinica = "";
+                if (completo) {
+                    if (normTotal < 30) {
+                        interpretacionClinica = `
+                            <p>Puntuación WOMAC <strong>${normTotal.toFixed(1)}%</strong>: <strong>Afectación leve</strong>.</p>
+                            <p>Síntomas leves con impacto limitado en AVD. Buena funcionalidad general.</p>`;
+                    } else if (normTotal < 60) {
+                        interpretacionClinica = `
+                            <p>Puntuación WOMAC <strong>${normTotal.toFixed(1)}%</strong>: <strong>Afectación moderada</strong>.</p>
+                            <p>Síntomas significativos que impactan calidad de vida. Limitaciones funcionales moderadas. Requiere programa estructurado.</p>`;
+                    } else {
+                        interpretacionClinica = `
+                            <p>Puntuación WOMAC <strong>${normTotal.toFixed(1)}%</strong>: <strong>Afectación severa</strong>.</p>
+                            <p>Síntomas severos con impacto significativo. Limitaciones funcionales importantes. Requiere abordaje integral.</p>`;
+                    }
+                } else {
+                    interpretacionClinica = `<p>Cuestionario incompleto. Se requieren al menos 20 respuestas para una interpretación fiable.</p>`;
+                }
+                interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+
+                 // Therapeutic Recommendations (Simplified, only if complete)
+                 let recomendationsHTML = "";
+                 if(completo){
+                     if (normTotal < 30) {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Afectación Leve):</h6>
+                            <ul>
+                                <li>Ejercicio terapéutico (fortalecimiento, control neuromuscular, aeróbico bajo impacto).</li>
+                                <li>Educación en manejo de cargas y protección articular.</li>
+                                <li>Terapia manual si hay disfunciones específicas.</li>
+                            </ul>`;
+                     } else if (normTotal < 60) {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Afectación Moderada):</h6>
+                            <ul>
+                                <li>Programa multimodal (ejercicio + educación + manual).</li>
+                                <li>Fortalecimiento progresivo, entrenamiento funcional.</li>
+                                <li>Estrategias de pacing y modificación de actividades.</li>
+                                <li>Considerar ayudas técnicas si es necesario.</li>
+                            </ul>`;
+                     } else { // Severe
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Afectación Severa):</h6>
+                            <ul>
+                                <li>Abordaje multidisciplinar.</li>
+                                <li>Ejercicio adaptado y de muy baja carga inicial.</li>
+                                <li>Manejo del dolor multimodal, Terapia manual gentil.</li>
+                                <li>Entrenamiento funcional básico, adaptaciones, órtesis.</li>
+                                 <li>Considerar evaluación médica para opciones avanzadas.</li>
+                            </ul>`;
+                     }
+                 } else {
+                     recomendationsHTML = `<p>Complete el cuestionario (al menos 20 respuestas) para obtener recomendaciones.</p>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+            } else if (!interaccionUsuario){
+                 // Reset if no interaction
+                  if(valorTotalEl) valorTotalEl.textContent = "-/- (%)";
+                  if(valorDolorEl) valorDolorEl.textContent = "-/- (%)";
+                  if(valorRigidezEl) valorRigidezEl.textContent = "-/- (%)";
+                  if(valorFuncionEl) valorFuncionEl.textContent = "-/- (%)";
+                  if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete el cuestionario";
+                  if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                  if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                  if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                  if(badge) badge.className = "resultado-badge no-completado";
+            }
+             // If user interacted but not enough answers, the badge shows incomplete, and results area shows partial data.
+        }
+
+        // ***** FIN JAVASCRIPT PARTE 4 *****
+    // ***** INICIO JAVASCRIPT PARTE 5 *****
+
+        // Función para calcular el START MSK Tool
+        function calcularStartMSK() {
+            const items = [];
+            let itemsRespondidos = 0;
+            for (let i = 1; i <= 10; i++) {
+                const item = document.querySelector(`input[name="startmsk_item${i}"]:checked`);
+                items.push(item);
+                if (item) itemsRespondidos++;
+            }
+
+            // START MSK requiere al menos 8/10 items respondidos
+            const respuestasMinimas = 8;
+            const completo = itemsRespondidos >= respuestasMinimas;
+            let mensajeIncompleto = completo ? "" : " (incompleto)";
+
+            // Update UI elements safely
+            const badge = document.getElementById('startmsk-badge');
+            const valorTotalEl = document.getElementById('startmsk-valor-total');
+            const valorFisicaEl = document.getElementById('startmsk-valor-fisica');
+            const valorPsicosocialEl = document.getElementById('startmsk-valor-psicosocial');
+            const interpretacionTotalEl = document.getElementById('startmsk-interpretacion-total');
+            const resultadoContainer = document.getElementById('startmsk-resultado');
+            const interpretacionClinicaEl = document.getElementById('startmsk-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('startmsk-recomendaciones');
+
+             if (badge) {
+                 if (completo || itemsRespondidos > 0) { // Show badge if user interacted
+                     badge.textContent = "Completado"; // Update later
+                     badge.classList.remove("no-completado");
+                     badge.classList.add("completado", "badge-verde"); // Start green
+                 }
+                 if (!completo && itemsRespondidos > 0) {
+                     badge.textContent = "Incompleto";
+                     badge.classList.remove("badge-verde");
+                     badge.classList.add("no-completado");
+                 }
+                 if (itemsRespondidos === 0){
+                      badge.textContent = "No completado";
+                      badge.classList.remove("completado", "badge-verde");
+                      badge.classList.add("no-completado");
+                 }
+            }
+
+
+            if ( (completo || itemsRespondidos > 0) && valorTotalEl && valorFisicaEl && valorPsicosocialEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl) {
+                let puntuacionTotal = 0;
+                let puntuacionFisica = 0;
+                let puntuacionPsicosocial = 0;
+                items.forEach((item, index) => {
+                    if (item !== null) {
+                        const valor = parseInt(item.value);
+                        puntuacionTotal += valor;
+                        if (index < 4) puntuacionFisica += valor; // Items 1-4
+                        else puntuacionPsicosocial += valor; // Items 5-10
+                    }
+                });
+
+                valorTotalEl.textContent = puntuacionTotal + "/10" + mensajeIncompleto;
+                valorFisicaEl.textContent = puntuacionFisica + "/4";
+                 const riesgoPsicosocial = puntuacionPsicosocial >= 4 ? "elevado" : "bajo";
+                valorPsicosocialEl.textContent = `${puntuacionPsicosocial}/6 (${riesgoPsicosocial})`;
+
+                let nivelRiesgo = "";
+                let colorBadge = "";
+                let colorClase = "";
+                if (puntuacionTotal <= 3) {
+                    nivelRiesgo = "Riesgo bajo"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                } else if (puntuacionTotal <= 6) {
+                    nivelRiesgo = "Riesgo medio"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                } else {
+                    nivelRiesgo = "Riesgo alto"; colorBadge = "alto"; colorClase = "nivel-severo";
+                }
+
+                interpretacionTotalEl.textContent = completo ? nivelRiesgo : "Incompleto";
+                interpretacionTotalEl.className = `resultado-interpretacion ${completo ? colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo") : ''}`;
+                resultadoContainer.className = "resultado-container " + (completo ? colorClase : '');
+                if(badge && (completo || itemsRespondidos > 0)) badge.textContent = completo ? nivelRiesgo : "Incompleto";
+                 if(badge && completo) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                 // Clinical Interpretation
+                 let interpretacionClinica = "";
+                 if(completo){
+                     if (puntuacionTotal <= 3) {
+                         interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/10</strong>: <strong>Riesgo bajo</strong> de cronicidad.</p>
+                            <p>Predominan factores biomecánicos. Buen pronóstico con tratamiento estándar.</p>
+                            <p>Subescala Psicosocial (${puntuacionPsicosocial}/6): Riesgo ${riesgoPsicosocial}. ${riesgoPsicosocial === 'elevado' ? '<span class="text-danger">Monitorizar factores psicosociales.</span>' : ''}</p>`;
+                     } else if (puntuacionTotal <= 6) {
+                         interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/10</strong>: <strong>Riesgo medio</strong> de cronicidad.</p>
+                            <p>Combinación de factores físicos y psicosociales. Requiere abordaje combinado.</p>
+                            <p>Subescala Psicosocial (${puntuacionPsicosocial}/6): Riesgo ${riesgoPsicosocial}. ${riesgoPsicosocial === 'elevado' ? '<span class="text-danger">Factores psicosociales significativos presentes.</span>' : ''}</p>`;
+                     } else {
+                         interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/10</strong>: <strong>Riesgo alto</strong> de cronicidad.</p>
+                            <p>Condición compleja con factores psicosociales importantes. Alto riesgo de dolor persistente. Requiere abordaje multidisciplinar.</p>
+                            <p>Subescala Psicosocial (${puntuacionPsicosocial}/6): Riesgo ${riesgoPsicosocial}. <span class="text-danger">Factores psicosociales elevados requieren atención específica.</span></p>`;
+                     }
+                 } else {
+                      interpretacionClinica = `<p>Cuestionario incompleto. Se requieren al menos 8 respuestas para una interpretación fiable.</p>`;
+                 }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified, only if complete)
+                 let recomendationsHTML = "";
+                 if(completo){
+                     if (puntuacionTotal <= 3) {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Bajo):</h6>
+                            <ul>
+                                <li>Fisioterapia estándar: Educación, ejercicio terapéutico específico, terapia manual si es necesario.</li>
+                                <li>Fomentar autogestión y retorno a actividad.</li>
+                                ${riesgoPsicosocial === 'elevado' ? '<li>Monitorizar y abordar factores psicosociales básicos.</li>' : ''}
+                            </ul>`;
+                     } else if (puntuacionTotal <= 6) {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Medio):</h6>
+                            <ul>
+                                <li>Abordaje combinado físico-psicosocial.</li>
+                                <li>Ejercicio terapéutico progresivo + Educación en neurociencia del dolor.</li>
+                                <li>Técnicas de exposición gradual si hay miedo-evitación.</li>
+                                 <li>Estrategias de afrontamiento activo.</li>
+                            </ul>`;
+                     } else { // Alto
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Alto):</h6>
+                            <ul>
+                                <li>Abordaje multidisciplinar (fisio + psicólogo).</li>
+                                <li>Intervención cognitivo-conductual + Ejercicio gradual.</li>
+                                <li>Educación intensiva en neurociencia del dolor.</li>
+                                 <li>Manejo de factores específicos (catastrofización, ansiedad, etc.).</li>
+                                 <li>Establecimiento de objetivos funcionales realistas.</li>
+                            </ul>`;
+                     }
+                 } else {
+                     recomendationsHTML = `<p>Complete el cuestionario (al menos 8 respuestas) para obtener recomendaciones.</p>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else if (!interaccionUsuario) {
+                // Reset if no interaction
+                 if(valorTotalEl) valorTotalEl.textContent = "-/10";
+                 if(valorFisicaEl) valorFisicaEl.textContent = "-/4";
+                 if(valorPsicosocialEl) valorPsicosocialEl.textContent = "-/6";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete el cuestionario";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                 if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular el START Back Tool
+        function calcularStartBack() {
+            const items1a8 = [];
+            let items1a8Respondidos = 0;
+            for (let i = 1; i <= 8; i++) {
+                const item = document.querySelector(`input[name="startback_item${i}"]:checked`);
+                items1a8.push(item);
+                 if(item) items1a8Respondidos++;
+            }
+            const item9 = document.querySelector('input[name="startback_item9"]:checked');
+            const item9Respondido = item9 !== null;
+            const itemsRespondidos = items1a8Respondidos + (item9Respondido ? 1 : 0);
+
+            // START Back requiere al menos 7/9 items respondidos
+            const respuestasMinimas = 7;
+            const completo = itemsRespondidos >= respuestasMinimas;
+             let mensajeIncompleto = completo ? "" : " (incompleto)";
+
+             // Update UI elements safely
+            const badge = document.getElementById('startback-badge');
+            const valorTotalEl = document.getElementById('startback-valor-total');
+            const valorPsicosocialEl = document.getElementById('startback-valor-psicosocial');
+            const grupoRiesgoEl = document.getElementById('startback-grupo-riesgo');
+            const interpretacionTotalEl = document.getElementById('startback-interpretacion-total');
+            const resultadoContainer = document.getElementById('startback-resultado');
+            const interpretacionClinicaEl = document.getElementById('startback-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('startback-recomendaciones');
+
+             if (badge) {
+                 if (completo || itemsRespondidos > 0) { // Show badge if user interacted
+                     badge.textContent = "Completado"; // Update later
+                     badge.classList.remove("no-completado");
+                     badge.classList.add("completado", "badge-verde"); // Start green
+                 }
+                  if (!completo && itemsRespondidos > 0) {
+                     badge.textContent = "Incompleto";
+                     badge.classList.remove("badge-verde");
+                     badge.classList.add("no-completado");
+                 }
+                 if (itemsRespondidos === 0) {
+                      badge.textContent = "No completado";
+                      badge.classList.remove("completado", "badge-verde");
+                      badge.classList.add("no-completado");
+                 }
+            }
+
+
+            if ( (completo || itemsRespondidos > 0) && valorTotalEl && valorPsicosocialEl && grupoRiesgoEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl ) {
+                 let puntuacionItems1a8 = 0;
+                 items1a8.forEach(item => { if (item) puntuacionItems1a8 += parseInt(item.value); });
+
+                 let puntuacionItem9 = 0;
+                 if (item9) {
+                     const valorItem9 = parseInt(item9.value);
+                     // Original START Back v1: 0-3=0, 4-5=1. Check if JS logic reflects this.
+                     // Assuming the provided JS used the value directly or handled it.
+                     // Let's assume the original logic intended to use the value if >= 4:
+                     if (valorItem9 >= 4) { puntuacionItem9 = 1; }
+                 }
+
+                 const puntuacionTotal = puntuacionItems1a8 + puntuacionItem9; // Max 9
+
+                 let puntuacionPsicosocial = 0;
+                 for (let i = 4; i < 8; i++) { // Items 5-8 (indices 4-7)
+                     if (items1a8[i]) puntuacionPsicosocial += parseInt(items1a8[i].value);
+                 }
+                 puntuacionPsicosocial += puntuacionItem9; // Max 5
+
+                 valorTotalEl.textContent = puntuacionTotal + "/9" + mensajeIncompleto;
+                 valorPsicosocialEl.textContent = puntuacionPsicosocial + "/5";
+
+                 let grupoRiesgo = "";
+                 let colorBadge = "";
+                 let colorClase = "";
+                 if (puntuacionTotal <= 3) {
+                     grupoRiesgo = "Riesgo bajo"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                 } else if (puntuacionPsicosocial < 4) { // Total > 3 and Psychosocial < 4
+                     grupoRiesgo = "Riesgo medio"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                 } else { // Total > 3 and Psychosocial >= 4
+                     grupoRiesgo = "Riesgo alto"; colorBadge = "alto"; colorClase = "nivel-severo";
+                 }
+
+                 grupoRiesgoEl.textContent = grupoRiesgo;
+                 interpretacionTotalEl.textContent = completo ? grupoRiesgo : "Incompleto";
+                 interpretacionTotalEl.className = `resultado-interpretacion ${completo ? colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo") : ''}`;
+                 resultadoContainer.className = "resultado-container " + (completo ? colorClase : '');
+                  if(badge && (completo || itemsRespondidos > 0)) badge.textContent = completo ? grupoRiesgo : "Incompleto";
+                  if(badge && completo) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                 // Clinical Interpretation
+                 let interpretacionClinica = "";
+                 if(completo){
+                     if (grupoRiesgo === "Riesgo bajo") {
+                         interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/9</strong> (Psicosocial ${puntuacionPsicosocial}/5): <strong>Riesgo bajo</strong>.</p>
+                            <p>Bajo riesgo de mal pronóstico. Predominan factores biomecánicos. Buen pronóstico con tratamiento estándar.</p>`;
+                     } else if (grupoRiesgo === "Riesgo medio") {
+                          interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/9</strong> (Psicosocial ${puntuacionPsicosocial}/5): <strong>Riesgo medio</strong>.</p>
+                            <p>Combinación de factores físicos y psicosociales (bajos). Requiere enfoque fisioterapéutico más intenso.</p>`;
+                     } else { // Alto
+                          interpretacionClinica = `
+                            <p>Puntuación <strong>${puntuacionTotal}/9</strong> (Psicosocial ${puntuacionPsicosocial}/5): <strong>Riesgo alto</strong>.</p>
+                            <p>Alto riesgo por factores psicosociales. Requiere abordaje integrado psicológico-físico.</p>`;
+                     }
+                 } else {
+                      interpretacionClinica = `<p>Cuestionario incompleto. Se requieren al menos 7 respuestas para una interpretación fiable.</p>`;
+                 }
+                  interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified, only if complete)
+                 let recomendationsHTML = "";
+                 if(completo){
+                     if (grupoRiesgo === "Riesgo bajo") {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Bajo):</h6>
+                            <ul>
+                                <li>Fisioterapia estándar: Educación, autogestión, ejercicio específico.</li>
+                                <li>Promover actividad y evitar reposo.</li>
+                            </ul>`;
+                     } else if (grupoRiesgo === "Riesgo medio") {
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Medio):</h6>
+                            <ul>
+                                <li>Fisioterapia más intensa: Ejercicio terapéutico progresivo, control motor.</li>
+                                 <li>Abordaje de factores físicos con consideración de psicosociales emergentes.</li>
+                                 <li>Educación y estrategias de autogestión activa.</li>
+                            </ul>`;
+                     } else { // Alto
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Riesgo Alto):</h6>
+                            <ul>
+                                <li>Abordaje combinado psicológico-físico.</li>
+                                <li>Intervención cognitivo-conductual, exposición gradual.</li>
+                                <li>Educación en neurociencia del dolor.</li>
+                                <li>Ejercicio adaptado para reducir miedo-evitación.</li>
+                                <li>Considerar enfoque multidisciplinar.</li>
+                            </ul>`;
+                     }
+                 } else {
+                      recomendationsHTML = `<p>Complete el cuestionario (al menos 7 respuestas) para obtener recomendaciones.</p>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else if (!interaccionUsuario){
+                 // Reset if no interaction
+                  if(valorTotalEl) valorTotalEl.textContent = "-/9";
+                  if(valorPsicosocialEl) valorPsicosocialEl.textContent = "-/5";
+                  if(grupoRiesgoEl) grupoRiesgoEl.textContent = "-";
+                  if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete el cuestionario";
+                  if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                  if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                  if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                  if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+        // Función para calcular el LEFS (Lower Extremity Functional Scale)
+        function calcularLEFS() {
+            const items = [];
+            let itemsRespondidos = 0;
+            for (let i = 1; i <= 20; i++) {
+                const item = document.querySelector(`input[name="lefs_item${i}"]:checked`);
+                items.push(item);
+                 if(item) itemsRespondidos++;
+            }
+
+            // LEFS requiere al menos 16/20 items respondidos (~80%)
+            const respuestasMinimas = 16;
+            const completo = itemsRespondidos >= respuestasMinimas;
+            let mensajeIncompleto = completo ? "" : " (incompleto)";
+
+             // Update UI elements safely
+            const badge = document.getElementById('lefs-badge');
+            const valorTotalEl = document.getElementById('lefs-valor-total');
+            const valorPorcentajeEl = document.getElementById('lefs-valor-porcentaje');
+            const nivelDiscapacidadEl = document.getElementById('lefs-nivel-discapacidad');
+            const interpretacionTotalEl = document.getElementById('lefs-interpretacion-total');
+            const resultadoContainer = document.getElementById('lefs-resultado');
+            const interpretacionClinicaEl = document.getElementById('lefs-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('lefs-recomendaciones');
+
+             if (badge) {
+                if (completo || itemsRespondidos > 0) { // Show badge if user interacted
+                    badge.textContent = "Completado"; // Update later
+                    badge.classList.remove("no-completado");
+                    badge.classList.add("completado", "badge-verde"); // Start green
+                }
+                 if (!completo && itemsRespondidos > 0) {
+                    badge.textContent = "Incompleto";
+                    badge.classList.remove("badge-verde");
+                    badge.classList.add("no-completado");
+                }
+                 if (itemsRespondidos === 0) {
+                     badge.textContent = "No completado";
+                     badge.classList.remove("completado", "badge-verde");
+                     badge.classList.add("no-completado");
+                 }
+            }
+
+
+            if ( (completo || itemsRespondidos > 0) && valorTotalEl && valorPorcentajeEl && nivelDiscapacidadEl && interpretacionTotalEl && resultadoContainer && interpretacionClinicaEl && recomendacionesEl ) {
+                 let puntuacionTotal = 0;
+                 items.forEach(item => { if (item) puntuacionTotal += parseInt(item.value); });
+                 const maxPuntajePosible = itemsRespondidos * 4;
+
+                 // Calculate percentage function (0-100%, 100% is best)
+                 const porcentajeFuncion = itemsRespondidos > 0 ? (puntuacionTotal / maxPuntajePosible) * 100 : 0;
+                 const porcentajeRedondeado = porcentajeFuncion.toFixed(1);
+
+                 // Determine disability level (higher score = better function)
+                 // Common interpretation: < 35 Severe, 35-65 Moderate, > 65 Mild/Minimal
+                  // Let's use cutoffs based on typical score ranges roughly correlating to disability
+                 const umbralSevero = Math.round(32 * (itemsRespondidos / 20)); // ~40% function
+                 const umbralModerado = Math.round(56 * (itemsRespondidos / 20)); // ~70% function
+
+                 let nivelDiscapacidad = "";
+                 let colorBadge = "";
+                 let colorClase = "";
+
+                 if (puntuacionTotal < umbralSevero) { // Low score = high disability
+                     nivelDiscapacidad = "Limitación severa"; colorBadge = "alto"; colorClase = "nivel-severo";
+                 } else if (puntuacionTotal < umbralModerado) {
+                     nivelDiscapacidad = "Limitación moderada"; colorBadge = "moderado"; colorClase = "nivel-moderado";
+                 } else { // High score = low disability
+                     nivelDiscapacidad = "Limitación leve"; colorBadge = "bajo"; colorClase = "nivel-leve";
+                 }
+
+                 valorTotalEl.textContent = `${puntuacionTotal}/${maxPuntajePosible}${mensajeIncompleto}`;
+                 valorPorcentajeEl.textContent = porcentajeRedondeado + "%";
+                 nivelDiscapacidadEl.textContent = nivelDiscapacidad;
+                 interpretacionTotalEl.textContent = completo ? nivelDiscapacidad : "Incompleto";
+                  interpretacionTotalEl.className = `resultado-interpretacion ${completo ? colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo") : ''}`; // Colors represent disability level
+                  resultadoContainer.className = "resultado-container " + (completo ? colorClase : '');
+                  if(badge && (completo || itemsRespondidos > 0)) badge.textContent = completo ? nivelDiscapacidad : "Incompleto";
+                  if(badge && completo) badge.className = "resultado-badge completado " + colorBadge;
+
+
+                  // Clinical Interpretation
+                 let interpretacionClinica = "";
+                  const mcid = 9; // Minimal Clinically Important Difference for LEFS
+                 if(completo){
+                      if (puntuacionTotal >= umbralModerado) { // Limitación leve
+                         interpretacionClinica = `
+                            <p>Puntuación LEFS <strong>${puntuacionTotal}/${maxPuntajePosible} (${porcentajeRedondeado}%)</strong>: <strong>Limitación leve</strong>.</p>
+                            <p>Buena capacidad funcional general. Posibles restricciones leves en actividades de alta demanda. MCID = ${mcid} pts.</p>`;
+                     } else if (puntuacionTotal >= umbralSevero) { // Limitación moderada
+                         interpretacionClinica = `
+                            <p>Puntuación LEFS <strong>${puntuacionTotal}/${maxPuntajePosible} (${porcentajeRedondeado}%)</strong>: <strong>Limitación moderada</strong>.</p>
+                            <p>Dificultades significativas en actividades de mayor demanda (correr, saltar, agacharse). Posibles compensaciones en AVD. MCID = ${mcid} pts.</p>`;
+                     } else { // Limitación severa
+                         interpretacionClinica = `
+                            <p>Puntuación LEFS <strong>${puntuacionTotal}/${maxPuntajePosible} (${porcentajeRedondeado}%)</strong>: <strong>Limitación severa</strong>.</p>
+                            <p>Restricciones importantes en mayoría de AVD (caminar, escaleras, autocuidado). Impacto significativo en calidad de vida. MCID = ${mcid} pts.</p>`;
+                     }
+                 } else {
+                      interpretacionClinica = `<p>Cuestionario incompleto. Se requieren al menos 16 respuestas para una interpretación fiable.</p>`;
+                 }
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+                 // Therapeutic Recommendations (Simplified, only if complete)
+                 let recomendationsHTML = "";
+                  if(completo){
+                       if (puntuacionTotal >= umbralModerado) { // Limitación leve
+                         recomendationsHTML = `
+                            <h6>Intervención Sugerida (Limitación Leve):</h6>
+                            <ul>
+                                <li>Fortalecimiento progresivo, control neuromuscular avanzado.</li>
+                                <li>Entrenamiento funcional específico y readaptación deportiva.</li>
+                                <li>Ejercicios pliométricos/potencia según demanda.</li>
+                                <li>Prevención de recidivas.</li>
+                            </ul>`;
+                     } else if (puntuacionTotal >= umbralSevero) { // Limitación moderada
+                          recomendationsHTML = `
+                            <h6>Intervención Sugerida (Limitación Moderada):</h6>
+                            <ul>
+                                <li>Programa progresivo de fortalecimiento y control motor.</li>
+                                <li>Entrenamiento propioceptivo y de equilibrio.</li>
+                                <li>Reeducación de patrones de movimiento funcional.</li>
+                                <li>Ejercicio aeróbico adaptado.</li>
+                            </ul>`;
+                     } else { // Limitación severa
+                          recomendationsHTML = `
+                            <h6>Intervención Sugerida (Limitación Severa):</h6>
+                            <ul>
+                                <li>Rehabilitación integral con progresión muy gradual.</li>
+                                <li>Ejercicios iniciales en descarga/asistidos.</li>
+                                <li>Entrenamiento funcional básico (transferencias, marcha).</li>
+                                <li>Manejo del dolor multimodal.</li>
+                                <li>Considerar ayudas técnicas.</li>
+                            </ul>`;
+                     }
+                 } else {
+                      recomendationsHTML = `<p>Complete el cuestionario (al menos 16 respuestas) para obtener recomendaciones.</p>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else if (!interaccionUsuario){
+                 // Reset if no interaction
+                  if(valorTotalEl) valorTotalEl.textContent = "-/80";
+                  if(valorPorcentajeEl) valorPorcentajeEl.textContent = "-%";
+                  if(nivelDiscapacidadEl) nivelDiscapacidadEl.textContent = "-";
+                  if(interpretacionTotalEl) interpretacionTotalEl.textContent = "Complete el cuestionario";
+                  if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                  if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                  if(interpretacionClinicaEl) interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica.";
+                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                   if(badge) badge.className = "resultado-badge no-completado";
+            }
+        }
+
+
+        // ***** FIN JAVASCRIPT PARTE 5 *****
+    // ***** INICIO JAVASCRIPT PARTE 6 *****
+
+        // Función para calcular el HOOS (Hip Disability and Osteoarthritis Outcome Score)
+        function calcularHOOS() {
+            const categorias = {
+                sintomas: { items: ['hoos_s1', 'hoos_s2', 'hoos_s3', 'hoos_s4', 'hoos_s5'], total: 5 },
+                dolor: { items: ['hoos_p1', 'hoos_p2', 'hoos_p3', 'hoos_p4', 'hoos_p5', 'hoos_p6', 'hoos_p7', 'hoos_p8', 'hoos_p9', 'hoos_p10'], total: 10 },
+                avd: { items: ['hoos_a1', 'hoos_a2', 'hoos_a3', 'hoos_a4', 'hoos_a5', 'hoos_a6', 'hoos_a7', 'hoos_a8', 'hoos_a9', 'hoos_a10', 'hoos_a11', 'hoos_a12', 'hoos_a13', 'hoos_a14', 'hoos_a15', 'hoos_a16', 'hoos_a17'], total: 17 },
+                deporte: { items: ['hoos_sp1', 'hoos_sp2', 'hoos_sp3', 'hoos_sp4'], total: 4 },
+                qol: { items: ['hoos_q1', 'hoos_q2', 'hoos_q3', 'hoos_q4'], total: 4 }
+            };
+
+            const puntuaciones = {};
+            const itemsRespondidos = {};
+            let totalRespondidosGeneral = 0;
+            let interaccionUsuario = false;
+
+            for (const [categoria, data] of Object.entries(categorias)) {
+                puntuaciones[categoria] = 0;
+                itemsRespondidos[categoria] = 0;
+                for (const item of data.items) {
+                    const valor = document.querySelector(`input[name="${item}"]:checked`)?.value;
+                    if (valor !== undefined) {
+                        puntuaciones[categoria] += parseInt(valor);
+                        itemsRespondidos[categoria]++;
+                        totalRespondidosGeneral++;
+                        interaccionUsuario = true;
+                    }
+                }
+            }
+
+            // Update UI elements safely
+            const badge = document.getElementById('hoos-badge');
+            const valorTotalEl = document.getElementById('hoos-valor-total');
+            const interpretacionTotalEl = document.getElementById('hoos-interpretacion-total');
+            const resultadoContainer = document.getElementById('hoos-resultado');
+            const interpretacionClinicaEl = document.getElementById('hoos-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('hoos-recomendaciones');
+            const idsPorCategoria = {
+                sintomas: 'hoos-valor-sintomas', dolor: 'hoos-valor-dolor', avd: 'hoos-valor-avd',
+                deporte: 'hoos-valor-deporte', qol: 'hoos-valor-qol'
+            };
+
+            // Check if at least 2 items per category are answered for valid subscale score
+            let categoriasValidas = 0;
+            const puntuacionesNormalizadas = {};
+
+            for (const [categoria, data] of Object.entries(categorias)) {
+                 const elementoValorSubescala = document.getElementById(idsPorCategoria[categoria]);
+                 if (itemsRespondidos[categoria] >= 2) { // Minimum 2 answers per subscale needed
+                     // Calculate normalized score (0-100, 100 = best)
+                     const puntuacionMedia = puntuaciones[categoria] / itemsRespondidos[categoria];
+                     puntuacionesNormalizadas[categoria] = 100 - (puntuacionMedia * 25);
+                     categoriasValidas++;
+                      if(elementoValorSubescala) elementoValorSubescala.textContent = `${puntuacionesNormalizadas[categoria].toFixed(1)}%`;
+                 } else {
+                     puntuacionesNormalizadas[categoria] = null;
+                     // Display 'N/A' or similar if not enough answers for the subscale
+                      if(elementoValorSubescala) elementoValorSubescala.textContent = "N/A";
+                 }
+            }
+
+            // Overall score is average of the 5 VALID subscale scores
+             const puntuacionTotalNormalizada = categoriasValidas > 0 ?
+                 Object.values(puntuacionesNormalizadas).filter(v => v !== null).reduce((sum, v) => sum + v, 0) / categoriasValidas
+                 : null;
+
+            // Update badge based on overall interaction
+             let completoGeneral = totalRespondidosGeneral >= Math.ceil(Object.values(categorias).reduce((sum, cat) => sum + cat.total, 0) * 0.8); // Check if ~80% of ALL questions are answered
+             let nivelAfectacion = "No evaluable";
+             let colorBadge = "no-completado";
+             let colorClase = "";
+
+             if (badge) {
+                 if (puntuacionTotalNormalizada !== null && completoGeneral) { // Check if overall score is calculable and most items answered
+                     if (puntuacionTotalNormalizada >= 70) { nivelAfectacion = "Afectación leve"; colorBadge = "bajo"; colorClase="nivel-leve"; }
+                     else if (puntuacionTotalNormalizada >= 40) { nivelAfectacion = "Afectación moderada"; colorBadge = "moderado"; colorClase="nivel-moderado";}
+                     else { nivelAfectacion = "Afectación severa"; colorBadge = "alto"; colorClase="nivel-severo";}
+                     badge.textContent = nivelAfectacion;
+                     badge.className = "resultado-badge completado " + colorBadge;
+                 } else if (interaccionUsuario) {
+                     badge.textContent = "Incompleto";
+                     badge.className = "resultado-badge no-completado";
+                 } else {
+                      badge.textContent = "No completado";
+                      badge.className = "resultado-badge no-completado";
+                 }
+             }
+
+              // Update total score display
+              if (valorTotalEl) {
+                 valorTotalEl.textContent = puntuacionTotalNormalizada !== null ? `${puntuacionTotalNormalizada.toFixed(1)}%` : "N/A";
+                  if(!completoGeneral && interaccionUsuario) valorTotalEl.textContent += " (incompleto)";
+              }
+              if (interpretacionTotalEl) {
+                  interpretacionTotalEl.textContent = nivelAfectacion;
+                  if (puntuacionTotalNormalizada !== null && completoGeneral) {
+                       interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                  } else {
+                       interpretacionTotalEl.className = "resultado-interpretacion";
+                  }
+              }
+              if (resultadoContainer) resultadoContainer.className = "resultado-container " + (completoGeneral ? colorClase : '');
+
+
+            // Update clinical interpretation and recommendations only if overall score is valid
+            if (puntuacionTotalNormalizada !== null && completoGeneral && interpretacionClinicaEl && recomendacionesEl) {
+                 let interpretacionClinica = "";
+                  if (puntuacionTotalNormalizada >= 70) {
+                      interpretacionClinica = `
+                        <p>Puntuación HOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación leve</strong>.</p>
+                        <p>Buena funcionalidad general. Síntomas leves. Posibles limitaciones en actividades de alta demanda.</p>`;
+                 } else if (puntuacionTotalNormalizada >= 40) {
+                      interpretacionClinica = `
+                        <p>Puntuación HOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación moderada</strong>.</p>
+                        <p>Dolor/síntomas moderados. Dificultades en AVD y actividades deportivas. Calidad de vida afectada.</p>`;
+                 } else {
+                      interpretacionClinica = `
+                        <p>Puntuación HOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación severa</strong>.</p>
+                        <p>Dolor/síntomas severos. Limitaciones importantes en AVD y calidad de vida. Requiere abordaje integral.</p>`;
+                 }
+                 // Add subscale details
+                 interpretacionClinica += "<p>Detalle subescalas (%): ";
+                 interpretacionClinica += Object.entries(puntuacionesNormalizadas)
+                     .map(([key, val]) => `${key.toUpperCase()}: ${val !== null ? val.toFixed(1) : 'N/A'}`)
+                     .join('; ');
+                 interpretacionClinica += "</p>";
+                 interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+
+                 // Simplified recommendations
+                 let recomendationsHTML = "";
+                  if (puntuacionTotalNormalizada >= 70) {
+                     recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Leve):</h6>
+                        <ul>
+                            <li>Fortalecimiento específico cadera/core, control neuromuscular.</li>
+                            <li>Entrenamiento funcional para actividades específicas.</li>
+                             <li>Educación en biomecánica y prevención.</li>
+                        </ul>`;
+                 } else if (puntuacionTotalNormalizada >= 40) {
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Moderada):</h6>
+                        <ul>
+                            <li>Programa multimodal: Ejercicio (fuerza, control motor, aeróbico), terapia manual.</li>
+                             <li>Educación en manejo de síntomas y pacing.</li>
+                             <li>Reentrenamiento funcional y adaptaciones.</li>
+                        </ul>`;
+                 } else { // Severa
+                      recomendationsHTML = `
+                        <h6>Intervención Sugerida (Afectación Severa):</h6>
+                        <ul>
+                            <li>Abordaje integral, posiblemente multidisciplinar.</li>
+                            <li>Ejercicio terapéutico muy gradual, manejo del dolor.</li>
+                             <li>Entrenamiento funcional básico, ayudas técnicas si es necesario.</li>
+                              <li>Educación avanzada y estrategias de autogestión.</li>
+                               <li>Considerar evaluación médica para opciones avanzadas.</li>
+                        </ul>`;
+                 }
+                 recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+            } else if (interpretacionClinicaEl && recomendacionesEl) {
+                 // Reset if incomplete or no interaction
+                 interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica (mínimo 2 respuestas por sección).";
+                 recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                 if(interpretacionTotalEl) interpretacionTotalEl.textContent = "No evaluable";
+                 if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                 if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                 // Badge handled above
+            }
+        }
+
+
+        // Función para calcular el KOOS (Knee Injury and Osteoarthritis Outcome Score)
+        function calcularKOOS() {
+             const categorias = {
+                sintomas: { items: ['koos_s1', 'koos_s2', 'koos_s3', 'koos_s4', 'koos_s5', 'koos_s6', 'koos_s7'], total: 7 },
+                dolor: { items: ['koos_p1', 'koos_p2', 'koos_p3', 'koos_p4', 'koos_p5', 'koos_p6', 'koos_p7', 'koos_p8', 'koos_p9'], total: 9 },
+                avd: { items: ['koos_a1', 'koos_a2', 'koos_a3', 'koos_a4', 'koos_a5', 'koos_a6', 'koos_a7', 'koos_a8', 'koos_a9', 'koos_a10', 'koos_a11', 'koos_a12', 'koos_a13', 'koos_a14', 'koos_a15', 'koos_a16', 'koos_a17'], total: 17 },
+                deporte: { items: ['koos_sp1', 'koos_sp2', 'koos_sp3', 'koos_sp4', 'koos_sp5'], total: 5 },
+                qol: { items: ['koos_q1', 'koos_q2', 'koos_q3', 'koos_q4'], total: 4 }
+            };
+
+            const puntuaciones = {};
+            const itemsRespondidos = {};
+            let totalRespondidosGeneral = 0;
+             let interaccionUsuario = false;
+
+
+            for (const [categoria, data] of Object.entries(categorias)) {
+                puntuaciones[categoria] = 0;
+                itemsRespondidos[categoria] = 0;
+                for (const item of data.items) {
+                    const valor = document.querySelector(`input[name="${item}"]:checked`)?.value;
+                    if (valor !== undefined) {
+                        puntuaciones[categoria] += parseInt(valor);
+                        itemsRespondidos[categoria]++;
+                        totalRespondidosGeneral++;
+                        interaccionUsuario = true;
+                    }
+                }
+            }
+
+            // Update UI elements safely
+            const badge = document.getElementById('koos-badge');
+            const valorTotalEl = document.getElementById('koos-valor-total');
+            const interpretacionTotalEl = document.getElementById('koos-interpretacion-total');
+            const resultadoContainer = document.getElementById('koos-resultado');
+            const interpretacionClinicaEl = document.getElementById('koos-interpretacion-clinica');
+            const recomendacionesEl = document.getElementById('koos-recomendaciones');
+            const idsPorCategoria = {
+                sintomas: 'koos-valor-sintomas', dolor: 'koos-valor-dolor', avd: 'koos-valor-avd',
+                deporte: 'koos-valor-deporte', qol: 'koos-valor-qol'
+            };
+
+             // Check if at least 2 items per category are answered
+             let categoriasValidas = 0;
+             const puntuacionesNormalizadas = {};
+
+             for (const [categoria, data] of Object.entries(categorias)) {
+                  const elementoValorSubescala = document.getElementById(idsPorCategoria[categoria]);
+                  if (itemsRespondidos[categoria] >= 2) { // Minimum 2 answers per subscale needed
+                      const puntuacionMedia = puntuaciones[categoria] / itemsRespondidos[categoria];
+                      puntuacionesNormalizadas[categoria] = 100 - (puntuacionMedia * 25); // 100 = best
+                      categoriasValidas++;
+                      if(elementoValorSubescala) elementoValorSubescala.textContent = `${puntuacionesNormalizadas[categoria].toFixed(1)}%`;
+                  } else {
+                      puntuacionesNormalizadas[categoria] = null;
+                      if(elementoValorSubescala) elementoValorSubescala.textContent = "N/A";
+                  }
+             }
+
+            // Overall score is average of the 5 VALID subscale scores
+             const puntuacionTotalNormalizada = categoriasValidas > 0 ?
+                 Object.values(puntuacionesNormalizadas).filter(v => v !== null).reduce((sum, v) => sum + v, 0) / categoriasValidas
+                 : null;
+
+              // Update badge based on overall interaction and validity
+              let completoGeneral = totalRespondidosGeneral >= Math.ceil(Object.values(categorias).reduce((sum, cat) => sum + cat.total, 0) * 0.8); // Check if ~80% of ALL questions are answered
+              let nivelAfectacion = "No evaluable";
+              let colorBadge = "no-completado";
+              let colorClase = "";
+
+              if (badge) {
+                  if (puntuacionTotalNormalizada !== null && completoGeneral) {
+                      if (puntuacionTotalNormalizada >= 70) { nivelAfectacion = "Afectación leve"; colorBadge = "bajo"; colorClase="nivel-leve"; }
+                      else if (puntuacionTotalNormalizada >= 40) { nivelAfectacion = "Afectación moderada"; colorBadge = "moderado"; colorClase="nivel-moderado";}
+                      else { nivelAfectacion = "Afectación severa"; colorBadge = "alto"; colorClase="nivel-severo";}
+                      badge.textContent = nivelAfectacion;
+                      badge.className = "resultado-badge completado " + colorBadge;
+                  } else if (interaccionUsuario) {
+                      badge.textContent = "Incompleto";
+                      badge.className = "resultado-badge no-completado";
+                  } else {
+                       badge.textContent = "No completado";
+                       badge.className = "resultado-badge no-completado";
+                  }
+              }
+
+               // Update total score display
+               if (valorTotalEl) {
+                  valorTotalEl.textContent = puntuacionTotalNormalizada !== null ? `${puntuacionTotalNormalizada.toFixed(1)}%` : "N/A";
+                   if(!completoGeneral && interaccionUsuario) valorTotalEl.textContent += " (incompleto)";
+               }
+               if (interpretacionTotalEl) {
+                   interpretacionTotalEl.textContent = nivelAfectacion;
+                   if (puntuacionTotalNormalizada !== null && completoGeneral) {
+                        interpretacionTotalEl.className = `resultado-interpretacion ${colorBadge.replace("bajo", "verde").replace("moderado", "amarillo").replace("alto", "rojo")}`;
+                   } else {
+                        interpretacionTotalEl.className = "resultado-interpretacion";
+                   }
+               }
+               if (resultadoContainer) resultadoContainer.className = "resultado-container " + (completoGeneral ? colorClase : '');
+
+
+             // Update clinical interpretation and recommendations only if overall score is valid
+             if (puntuacionTotalNormalizada !== null && completoGeneral && interpretacionClinicaEl && recomendacionesEl) {
+                  let interpretacionClinica = "";
+                   if (puntuacionTotalNormalizada >= 70) {
+                       interpretacionClinica = `
+                         <p>Puntuación KOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación leve</strong>.</p>
+                         <p>Buena funcionalidad general. Síntomas leves. Posibles limitaciones en actividades de alta demanda/deportivas.</p>`;
+                  } else if (puntuacionTotalNormalizada >= 40) {
+                       interpretacionClinica = `
+                         <p>Puntuación KOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación moderada</strong>.</p>
+                         <p>Dolor/síntomas moderados. Dificultades en AVD (escaleras, cuclillas) y deportes. Calidad de vida afectada.</p>`;
+                  } else {
+                       interpretacionClinica = `
+                         <p>Puntuación KOOS promedio <strong>${puntuacionTotalNormalizada.toFixed(1)}%</strong>: <strong>Afectación severa</strong>.</p>
+                         <p>Dolor/síntomas severos. Limitaciones importantes en AVD y calidad de vida. Requiere abordaje integral.</p>`;
+                  }
+                   // Add subscale details
+                  interpretacionClinica += "<p>Detalle subescalas (%): ";
+                  interpretacionClinica += Object.entries(puntuacionesNormalizadas)
+                      .map(([key, val]) => `${key.toUpperCase()}: ${val !== null ? val.toFixed(1) : 'N/A'}`)
+                      .join('; ');
+                  interpretacionClinica += "</p>";
+                  interpretacionClinicaEl.innerHTML = interpretacionClinica;
+
+
+                  // Simplified recommendations
+                  let recomendationsHTML = "";
+                   if (puntuacionTotalNormalizada >= 70) {
+                      recomendationsHTML = `
+                         <h6>Intervención Sugerida (Afectación Leve):</h6>
+                         <ul>
+                             <li>Fortalecimiento específico rodilla/cadera, control neuromuscular.</li>
+                             <li>Entrenamiento funcional y readaptación deportiva.</li>
+                             <li>Educación en biomecánica y prevención.</li>
+                         </ul>`;
+                  } else if (puntuacionTotalNormalizada >= 40) {
+                       recomendationsHTML = `
+                         <h6>Intervención Sugerida (Afectación Moderada):</h6>
+                         <ul>
+                             <li>Programa multimodal: Ejercicio (fuerza, control motor, aeróbico), terapia manual.</li>
+                             <li>Educación en manejo de síntomas y pacing.</li>
+                             <li>Reentrenamiento funcional y adaptaciones.</li>
+                              <li>Entrenamiento propioceptivo y de equilibrio.</li>
+                         </ul>`;
+                  } else { // Severa
+                       recomendationsHTML = `
+                         <h6>Intervención Sugerida (Afectación Severa):</h6>
+                         <ul>
+                             <li>Abordaje integral, posiblemente multidisciplinar.</li>
+                             <li>Ejercicio terapéutico muy gradual, manejo del dolor.</li>
+                             <li>Entrenamiento funcional básico, ayudas técnicas si es necesario.</li>
+                              <li>Educación avanzada y estrategias de autogestión.</li>
+                               <li>Considerar evaluación médica para opciones avanzadas.</li>
+                         </ul>`;
+                  }
+                  recomendacionesEl.innerHTML = recomendationsHTML;
+
+
+             } else if (interpretacionClinicaEl && recomendacionesEl) {
+                  // Reset if incomplete or no interaction
+                  interpretacionClinicaEl.textContent = "Complete el cuestionario para obtener la interpretación clínica (mínimo 2 respuestas por sección).";
+                  recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
+                   if(interpretacionTotalEl) interpretacionTotalEl.textContent = "No evaluable";
+                   if(interpretacionTotalEl) interpretacionTotalEl.className = "resultado-interpretacion";
+                   if(resultadoContainer) resultadoContainer.className = "resultado-container";
+                   // Badge handled above
+             }
+        }
+
+
+        // ***** FIN JAVASCRIPT PARTE 6 *****
+    // ***** INICIO NUEVA FUNCIÓN GUARDAR PDF *****
+
+        async function guardarCuestionarioComoPDF(idContenidoCuestionario, nombreCuestionario) {
+            console.log(`Iniciando guardado PDF para: ${idContenidoCuestionario}`);
+            const { jsPDF } = window.jspdf; // Acceder a jsPDF desde el objeto window global
+
+            // 1. Encontrar el elemento del contenido del cuestionario
+            const elementoContenido = document.getElementById(idContenidoCuestionario);
+
+            // 1.1 Encontrar el elemento del header (para obtener el título si es necesario, aunque usamos el nombre pasado)
+             // Asumimos que el header es el hermano anterior al contenido
+             const elementoHeader = elementoContenido ? elementoContenido.previousElementSibling : null;
+
+             // 1.2 Encontrar el contenedor principal del item para incluir el header en la captura
+             const elementoItemCompleto = elementoContenido ? elementoContenido.parentElement : null;
+
+
+            if (!elementoContenido || !elementoHeader || !elementoItemCompleto) {
+                console.error(`Error: No se encontró el contenido (${!!elementoContenido}), header (${!!elementoHeader}) o item completo (${!!elementoItemCompleto}) para ${idContenidoCuestionario}`);
+                alert(`Error al preparar el cuestionario ${nombreCuestionario} para guardar como PDF.`);
+                return;
+            }
+
+            // 2. Asegurarse que el contenido esté visible para capturarlo
+            // Guardamos el estado original para restaurarlo después
+            const displayOriginalContenido = elementoContenido.style.display;
+            elementoContenido.style.display = 'block';
+             // Añadir una clase temporal para asegurar que el contenido no se colapse por otros estilos
+             elementoItemCompleto.classList.add('pdf-capture-active');
+
+
+             // --- Crear un contenedor temporal para el PDF ---
+             // Esto nos permite añadir información extra (nombre, fecha) y controlar mejor qué se captura
+             const pdfContenedor = document.createElement('div');
+             pdfContenedor.style.position = 'absolute'; // Fuera de la vista normal
+             pdfContenedor.style.left = '-9999px';
+             pdfContenedor.style.width = '800px'; // Ancho fijo para la captura (simula A4)
+             pdfContenedor.style.padding = '20px';
+             pdfContenedor.style.backgroundColor = '#ffffff'; // Fondo blanco
+             pdfContenedor.style.border = '1px solid #ccc'; // Borde visible si algo falla
+
+            // 3. Obtener Nombre y Fecha
+            const nombrePaciente = document.getElementById('nombrePaciente')?.value || 'No especificado';
+            const fechaInput = document.getElementById('fechaEvaluacion')?.value;
+            let fechaFormateada = 'No especificada';
+            if (fechaInput) {
+                 try {
+                     // Ajuste para asegurar que la fecha se interprete correctamente
+                     const parts = fechaInput.split('-'); // YYYY-MM-DD
+                     const fechaObj = new Date(parts[0], parts[1] - 1, parts[2]); // Mes es 0-indexado
+                     if (!isNaN(fechaObj)) {
+                        fechaFormateada = fechaObj.toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' });
+                    }
+                 } catch (e) { console.error("Error formateando fecha:", e); }
+            }
+
+             // 4. Clonar el contenido del cuestionario y añadirlo al contenedor temporal
+             // Clonamos el header y el contenido para incluirlos juntos
+             const headerClonado = elementoHeader.cloneNode(true);
+             const contenidoClonado = elementoContenido.cloneNode(true);
+
+              // Limpiar el header clonado (quitar badge, ajustar icono)
+              headerClonado.querySelector('.resultado-badge')?.remove(); // Quitar badge de estado
+              const iconoHeader = headerClonado.querySelector('h4 i');
+              if(iconoHeader) iconoHeader.style.display = 'none'; // Ocultar icono expandir
+
+             // Limpiar el contenido clonado (quitar botón PDF)
+             contenidoClonado.querySelector('button.btn-success')?.remove(); // Quitar botón PDF del clon
+
+             // Añadir Info Paciente al inicio del contenedor PDF
+             const infoDiv = document.createElement('div');
+             infoDiv.style.marginBottom = '20px';
+             infoDiv.style.borderBottom = '1px solid #eee';
+             infoDiv.style.paddingBottom = '15px';
+             infoDiv.innerHTML = `
+                 <h3>${nombreCuestionario}</h3>
+                 <p style="font-size: 10pt;"><strong>Paciente:</strong> ${nombrePaciente}</p>
+                 <p style="font-size: 10pt;"><strong>Fecha:</strong> ${fechaFormateada}</p>
+             `;
+             pdfContenedor.appendChild(infoDiv);
+             pdfContenedor.appendChild(contenidoClonado); // Añadir contenido clonado y limpio
+
+             // Añadir el contenedor temporal al body para que html2canvas lo renderice
+             document.body.appendChild(pdfContenedor);
+
+
+            // 5. Crear el objeto PDF (A4, mm)
+            const pdf = new jsPDF({
+                orientation: 'p',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            try {
+                // 6. Usar html2canvas para capturar el CONTENEDOR TEMPORAL como imagen
+                 console.log("Iniciando html2canvas...");
+                const canvas = await html2canvas(pdfContenedor, { // Captura el contenedor temporal
+                     scale: 2,
+                     useCORS: true,
+                     logging: true // Habilitar logs de html2canvas para depuración
+                });
+                 console.log("html2canvas completado.");
+                const imgData = canvas.toDataURL('image/png');
+
+                // 7. Calcular dimensiones y añadir imagen al PDF
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfPageWidth = pdf.internal.pageSize.getWidth();
+                const pdfPageHeight = pdf.internal.pageSize.getHeight();
+                const margin = 15; // Margen de 15mm
+                const pdfWidth = pdfPageWidth - 2 * margin;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width; // Alto proporcional
+
+                let currentHeight = 0; // Posición Y actual en la imagen original (en px)
+                let remainingHeight = canvas.height; // Alto total de la imagen en px
+                let page = 1;
+
+                 while (remainingHeight > 0) {
+                     if (page > 1) {
+                         pdf.addPage();
+                     }
+                     // Calcular cuánto de la imagen cabe en la página actual (en px)
+                     // Altura disponible en mm: pdfPageHeight - (margen superior + margen inferior)
+                     const availableHeightMM = pdfPageHeight - (margin * 2);
+                     // Convertir altura disponible a píxeles de la imagen original
+                     const heightToDrawPX = Math.min(remainingHeight, (availableHeightMM / pdfHeight) * canvas.height);
+
+                      console.log(`Página ${page}: Dibujando ${heightToDrawPX}px de ${remainingHeight}px restantes.`);
+
+                     // Crear un canvas temporal para la porción de la imagen
+                     const tempCanvas = document.createElement('canvas');
+                     tempCanvas.width = canvas.width;
+                     tempCanvas.height = heightToDrawPX;
+                     const tempCtx = tempCanvas.getContext('2d');
+
+                     // Dibujar la porción correspondiente de la imagen original en el canvas temporal
+                     tempCtx.drawImage(canvas,
+                         0, currentHeight, // Origen X, Y en la imagen fuente
+                         canvas.width, heightToDrawPX, // Ancho, Alto de la fuente a copiar
+                         0, 0, // Destino X, Y en el canvas temporal
+                         canvas.width, heightToDrawPX // Ancho, Alto en el canvas temporal
+                     );
+
+                     const imgChunkData = tempCanvas.toDataURL('image/png');
+                      // Calcular altura de la porción en mm para el PDF
+                      const heightToDrawMM = (heightToDrawPX * pdfWidth) / canvas.width;
+
+
+                     // Añadir la porción de imagen al PDF
+                     pdf.addImage(imgChunkData, 'PNG', margin, margin, pdfWidth, heightToDrawMM);
+
+                     remainingHeight -= heightToDrawPX; // Reducir la altura restante
+                     currentHeight += heightToDrawPX; // Avanzar en la imagen original
+                     page++;
+                 }
+
+
+                // 8. Generar nombre de archivo sugerido
+                 // Limpiar nombres para evitar caracteres inválidos en archivos
+                 const nombreLimpio = nombrePaciente.replace(/[^a-z0-9_-\s]/gi, '').replace(/\s+/g, '_') || 'SinNombre';
+                 const fechaLimpia = fechaFormateada.replace(/[^a-z0-9_-]/gi, '-') || 'SinFecha';
+                 const cuestionarioLimpio = nombreCuestionario.replace(/[^a-z0-9_-]/gi, '_');
+                const nombreArchivo = `Cuestionario_${cuestionarioLimpio}_${nombreLimpio}_${fechaLimpia}.pdf`;
+
+                // 9. Guardar el PDF
+                 console.log("Guardando PDF:", nombreArchivo);
+                pdf.save(nombreArchivo);
+
+            } catch (error) {
+                 console.error("Error detallado al generar el PDF:", error);
+                 alert(`Hubo un error al generar el PDF para ${nombreCuestionario}. Revisa la consola (F12) para más detalles técnicos.`);
+            } finally {
+                 // Restaurar la visibilidad original del elemento del cuestionario
+                 elementoContenido.style.display = displayOriginalContenido;
+                 // Quitar clase temporal
+                 elementoItemCompleto.classList.remove('pdf-capture-active');
+                 // Eliminar el contenedor temporal del body
+                 document.body.removeChild(pdfContenedor);
+                  console.log(`Guardado PDF para ${idContenidoCuestionario} finalizado.`);
+
+            }
+        }
+
+        // ***** FIN NUEVA FUNCIÓN GUARDAR PDF *****
+
+    // ***** INICIO CÓDIGO DE INICIALIZACIÓN *****
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha de hoy por defecto
+            try {
+                const today = new Date();
+                // Ajuste para obtener la fecha local en formato YYYY-MM-DD independientemente de la zona horaria
+                const offset = today.getTimezoneOffset() * 60000; // Offset en milisegundos
+                const localDate = new Date(today.getTime() - offset);
+                const formattedDate = localDate.toISOString().split('T')[0];
+
+                const fechaInput = document.getElementById('fechaEvaluacion');
+                if(fechaInput) {
+                    fechaInput.value = formattedDate;
+                }
+            } catch (e) {
+                 console.error("Error estableciendo fecha por defecto:", e);
+            }
+
+
+            // Llamar a todas las funciones de cálculo para inicializar los resultados
+            // Se usan comprobaciones 'typeof' para evitar errores si alguna función no existe
+            console.log("Inicializando cálculos de cuestionarios...");
+            if (typeof calcularPSFS === 'function') calcularPSFS();
+            if (typeof calcularGROC === 'function') calcularGROC();
+            if (typeof calcularSANE === 'function') calcularSANE();
+            if (typeof calcularBPI === 'function') calcularBPI();
+            if (typeof calcularPCS === 'function') calcularPCS();
+            if (typeof calcularCSI === 'function') calcularCSI();
+            if (typeof calcularTSK === 'function') calcularTSK();
+            if (typeof calcularDN4 === 'function') calcularDN4();
+            if (typeof calcularNDI === 'function') calcularNDI();
+            if (typeof calcularQuickDASH === 'function') calcularQuickDASH();
+            if (typeof calcularSPADI === 'function') calcularSPADI();
+            if (typeof calcularOswestry === 'function') calcularOswestry();
+            if (typeof calcularRolandMorris === 'function') calcularRolandMorris();
+            if (typeof calcularWOMAC === 'function') calcularWOMAC();
+            if (typeof calcularStartMSK === 'function') calcularStartMSK();
+            if (typeof calcularStartBack === 'function') calcularStartBack();
+            if (typeof calcularLEFS === 'function') calcularLEFS();
+            if (typeof calcularHOOS === 'function') calcularHOOS();
+            if (typeof calcularKOOS === 'function') calcularKOOS();
+             console.log("Cálculos iniciales completados.");
+
+            // Reasignar evento onclick para headers del acordeón
+            // Esto asegura que funcionen incluso si el script carga antes que el HTML
+             console.log("Asignando eventos de acordeón...");
+             document.querySelectorAll('.cuestionario-header').forEach(header => {
+                 const contentElement = header.nextElementSibling; // El div de contenido es el siguiente elemento
+                  if (contentElement && contentElement.id && contentElement.classList.contains('cuestionario-content')) {
+                     const contentId = contentElement.id;
+                     // Asignar directamente el evento onclick
+                     header.onclick = function() { toggleCuestionario(contentId); };
+                 } else {
+                      console.warn("Elemento de contenido no encontrado o sin ID para el header:", header);
+                  }
+             });
+             console.log("Eventos de acordeón asignados.");
+
+        });
+        // ***** FIN CÓDIGO DE INICIALIZACIÓN *****
+
+    </script> 
+    </body> 
+</html>
+
