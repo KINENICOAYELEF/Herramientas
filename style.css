@@ -1,383 +1,426 @@
-/* Estilos generales */
+/* style.css - NUEVA VERSIÓN ESTÉTICA */
+
+/* 1. Variables de Color y Fuentes */
+:root {
+    --kine-blue: #0d6efd; /* Azul principal Bootstrap */
+    --kine-indigo: #6610f2;
+    --kine-purple: #6f42c1;
+    --kine-pink: #d63384;
+    --kine-red: #dc3545;
+    --kine-orange: #fd7e14;
+    --kine-yellow: #ffc107;
+    --kine-green: #198754; /* Verde éxito Bootstrap */
+    --kine-teal: #20c997;
+    --kine-cyan: #0dcaf0;
+    --kine-white: #fff;
+    --kine-gray-100: #f8f9fa; /* Gris muy claro */
+    --kine-gray-200: #e9ecef; /* Gris claro */
+    --kine-gray-300: #dee2e6; /* Borde gris */
+    --kine-gray-400: #ced4da;
+    --kine-gray-500: #adb5bd;
+    --kine-gray-600: #6c757d; /* Gris secundario */
+    --kine-gray-700: #495057; /* Gris oscuro */
+    --kine-gray-800: #343a40; /* Gris más oscuro */
+    --kine-gray-900: #212529; /* Casi negro */
+    --kine-primary: var(--kine-blue);
+    --kine-secondary: var(--kine-gray-600);
+    --kine-success: var(--kine-green);
+    --kine-info: var(--kine-cyan);
+    --kine-warning: var(--kine-yellow);
+    --kine-danger: var(--kine-red);
+    --kine-light: var(--kine-gray-100);
+    --kine-dark: var(--kine-gray-800);
+
+    /* Tipografía Sugerida (puedes cambiarla si prefieres otra) */
+    --kine-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --kine-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --bs-body-font-family: var(--kine-font-sans-serif); /* Aplica la fuente al body */
+    --bs-border-radius: 0.375rem; /* Radio de borde Bootstrap */
+}
+
+/* 2. Estilos Generales del Body y Container */
 body {
-    /* Usa fuentes comunes del sistema para buena compatibilidad */
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    line-height: 1.6;
-    background-color: #f0f2f5; /* Fondo gris muy suave para la página entera */
-    color: #212529; /* Color de texto principal (Bootstrap dark) */
+    background-color: var(--kine-gray-100); /* Fondo general más suave */
+    color: var(--kine-gray-900);
+    line-height: 1.7; /* Mejor legibilidad */
+    font-size: 16px; /* Tamaño base */
 }
 
 .container {
-    max-width: 960px; /* Ancho máximo para legibilidad en pantallas grandes */
-    background-color: #ffffff; /* Fondo blanco para el área de contenido */
-    padding: 2rem; /* Espacio interno */
-    margin-top: 2rem; /* Margen superior */
-    margin-bottom: 2rem; /* Margen inferior */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra suave */
+    max-width: 1000px; /* Un poco más ancho */
+    background-color: var(--kine-white);
+    padding: 2.5rem 3rem; /* Más padding */
+    margin-top: 2.5rem;
+    margin-bottom: 3rem;
+    border-radius: 12px; /* Bordes más redondeados */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07); /* Sombra más definida */
 }
 
-/* Títulos */
+/* Responsive Padding for Container */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* 3. Títulos */
 h1 {
-    color: #0d6efd; /* Azul principal de Bootstrap */
+    color: var(--kine-primary);
     text-align: center;
-    margin-bottom: 2rem; /* Más espacio debajo del título principal */
-    font-weight: 500; /* Un poco menos grueso que el bold por defecto */
+    margin-bottom: 2.5rem;
+    font-weight: 600; /* Semibold */
+    letter-spacing: -0.5px;
 }
 
-h3, h4, h5 {
-    color: #343a40; /* Gris oscuro */
-    margin-top: 1.5rem; /* Espacio antes de los subtítulos */
-    margin-bottom: 1rem; /* Espacio después de los subtítulos */
-}
-
-h4 {
-    font-size: 1.25rem; /* Tamaño para títulos de cuestionarios */
-}
-
-h5 {
-    font-size: 1.1rem; /* Tamaño para subtítulos dentro de cuestionarios */
-    color: #495057; /* Un gris ligeramente más claro */
-}
-
-/* Estilos para la tarjeta de información del paciente */
-#info-paciente-card {
-    border-color: #ced4da; /* Borde estándar Bootstrap */
-}
-
-#info-paciente-card .card-header {
-    background-color: #e9ecef; /* Fondo gris claro para el encabezado */
-    font-weight: bold;
-    color: #495057;
-    border-bottom: 1px solid #dee2e6;
-}
-
-#info-paciente-card .card-body {
-    padding: 1.5rem; /* Más padding interno */
-}
-
-/* Estilos para los labels de los formularios */
-.form-label {
-    font-weight: 500; /* Ligeramente más grueso */
+h3 { /* Título "Cuestionarios Clínicos" */
+    color: var(--kine-dark);
     margin-bottom: 0.5rem;
-    display: block; /* Asegura que ocupe su línea */
-}
-
-/* Placeholder text */
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #6c757d;
-  opacity: 1; /* Firefox */
-}
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #6c757d;
-}
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #6c757d;
-}
-/* Estilos para el Acordeón de Cuestionarios */
-.cuestionarios-acordeon .cuestionario-item {
-    border: 1px solid #dee2e6;
-    margin-bottom: 1rem;
-    border-radius: 0.375rem;
-    overflow: hidden;
-    transition: box-shadow 0.2s ease-in-out;
-}
-.cuestionarios-acordeon .cuestionario-item:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.06); /* Sombra más sutil al pasar */
-}
-
-.cuestionarios-acordeon .cuestionario-header {
-    background-color: #f8f9fa; /* Gris claro Bootstrap */
-    padding: 1rem 1.25rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #dee2e6;
-    transition: background-color 0.2s ease;
-}
-
-.cuestionarios-acordeon .cuestionario-header:hover {
-    background-color: #e9ecef; /* Gris un poco más oscuro */
-}
-
-/* Estilo para el header cuando el contenido está visible */
-.cuestionarios-acordeon .cuestionario-header.active {
-     background-color: #cfe2ff; /* Azul claro Bootstrap */
-     border-bottom-color: #b6d4fe; /* Borde azul más oscuro */
-}
-.cuestionarios-acordeon .cuestionario-header.active h4 {
-    color: #0a58ca; /* Azul oscuro para el título activo */
-}
-.cuestionarios-acordeon .cuestionario-header.active h4 i {
-    transform: rotate(90deg);
-    color: #0a58ca; /* Icono azul oscuro */
-}
-
-.cuestionarios-acordeon .cuestionario-header h4 {
-    margin-bottom: 0;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    color: #0d6efd; /* Títulos de cuestionario en azul */
     font-weight: 500;
+    border-bottom: 1px solid var(--kine-gray-200);
+    padding-bottom: 0.75rem;
+}
+h4 { /* Títulos de Cuestionarios */
+    color: var(--kine-primary);
+    font-size: 1.2rem; /* Ligeramente más grande */
+    font-weight: 600;
+    margin-bottom: 0; /* Controlado por el header */
+}
+h5 { /* Subtítulos internos (Ej: Parte 1, Parte 2) */
+    color: var(--kine-gray-700);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 2rem; /* Más espacio antes */
+    margin-bottom: 0.75rem;
+    border-bottom: 1px dotted var(--kine-gray-300);
+    padding-bottom: 0.4rem;
 }
 
-.cuestionarios-acordeon .cuestionario-header h4 i {
-    margin-right: 0.75rem;
-    color: #6c757d; /* Icono gris por defecto */
-    transition: transform 0.3s ease;
-}
-
-.cuestionarios-acordeon .cuestionario-content {
-    padding: 1.5rem;
-    border-top: 1px solid #dee2e6;
-    background-color: #fff; /* Fondo blanco para el contenido */
-    /* La visibilidad (display: none/block) se maneja por JS */
-}
-
-/* Estilos para los Resultados y Badges */
-.resultado-badge {
-    font-size: 0.75em; /* Más pequeño */
-    padding: 0.4em 0.8em;
-    border-radius: 50rem; /* Píldora */
-    font-weight: 600; /* Semibold */
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    vertical-align: middle; /* Alinear mejor con el título */
-}
-.resultado-badge.no-completado {
-    background-color: #6c757d; /* Gris */
-    color: white;
-}
-.resultado-badge.completado {
-    background-color: #198754; /* Verde oscuro */
-    color: white;
-}
-/* Colores específicos de nivel (si los usas directamente en el badge) */
-.resultado-badge.bajo { background-color: #198754; color: white;} /* Verde */
-.resultado-badge.moderado { background-color: #ffc107; color:#000; } /* Amarillo */
-.resultado-badge.alto { background-color: #dc3545; color: white;} /* Rojo */
-
-
-.resultado-container {
-    border: 1px solid #e9ecef; /* Borde gris claro */
-    padding: 1.25rem;
-    margin-top: 1.5rem;
-    border-radius: 0.375rem;
-    background-color: #f8f9fa; /* Fondo gris muy claro */
-}
-/* Clases de severidad para el contenedor de resultados */
-.resultado-container.nivel-leve { border-left: 5px solid #198754; } /* Verde */
-.resultado-container.nivel-moderado { border-left: 5px solid #ffc107; } /* Amarillo */
-.resultado-container.nivel-severo { border-left: 5px solid #dc3545; } /* Rojo */
-
-
-.resultado-label, .resultado-sublabel {
-    font-weight: 600; /* Semibold */
-    margin-bottom: 0.4rem;
-    color: #495057; /* Gris oscuro */
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.resultado-valor {
-    font-size: 1.25em;
-    color: #212529; /* Casi negro */
-    font-weight: 500;
-    margin-bottom: 0.5rem; /* Espacio debajo del valor */
-}
-.resultado-interpretacion {
-    margin-top: 0.5rem;
-    font-size: 0.95em;
-    padding: 0.6rem 0.8rem;
-    border-radius: 0.25rem;
-    border: 1px solid transparent;
-    font-style: normal; /* Quitar cursiva por defecto */
-}
-
-/* Colores para interpretación (fondos) */
-.resultado-interpretacion.verde { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
-.resultado-interpretacion.verde-claro { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc;} /* Usar el mismo verde claro */
-.resultado-interpretacion.amarillo { background-color: #fff3cd; color: #664d03; border-color: #ffeeba; }
-.resultado-interpretacion.rojo { background-color: #f8d7da; color: #842029; border-color: #f5c2c7; }
-
-/* Estilos específicos para GROC (mejorados) */
-.groc-scale-container {
-    overflow-x: auto; /* Scroll horizontal en móvil */
-    padding-bottom: 15px; /* Espacio para scrollbar si aparece */
-    white-space: nowrap; /* Evita que los botones bajen */
-}
-.groc-scale {
-    display: inline-flex; /* Para que el contenedor se ajuste */
-    gap: 6px; /* Espacio entre etiquetas */
-}
-.groc-scale input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-.groc-scale label {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centrar verticalmente */
-    align-items: center;
+/* Descripción general debajo de H3 */
+#cuestionarios > p.mb-3 {
+    color: var(--kine-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2rem !important; /* Más espacio antes del acordeón */
     text-align: center;
-    padding: 8px 10px;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    font-size: 0.85em;
-    min-width: 60px; /* Ancho mínimo para que quepa el texto */
-    min-height: 60px; /* Alto mínimo */
-    background-color: #fff;
-    transition: all 0.2s ease-in-out;
-    user-select: none; /* Evitar selección de texto */
-}
-.groc-scale input[type="radio"]:checked + label {
-    background-color: #0d6efd; /* Azul Bootstrap */
-    color: white;
-    border-color: #0a58ca;
-    font-weight: bold;
-    transform: translateY(-2px); /* Pequeño efecto al seleccionar */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.groc-scale label:hover {
-    background-color: #e9ecef;
-    border-color: #adb5bd;
 }
 
-/* Estilos para tablas (mejorados) */
-.table {
+
+/* 4. Tarjeta de Información del Paciente */
+#info-paciente-card {
+    border: 1px solid var(--kine-gray-300);
+    border-radius: var(--bs-border-radius);
+    margin-bottom: 2.5rem; /* Más espacio */
+}
+#info-paciente-card .card-header {
+    background-color: var(--kine-light);
+    font-weight: 600;
+    color: var(--kine-gray-700);
+    border-bottom: 1px solid var(--kine-gray-300);
+    padding: 0.75rem 1.25rem;
+}
+#info-paciente-card .card-body {
+    padding: 1.5rem;
+}
+#info-paciente-card .form-label {
+    font-weight: 500;
     font-size: 0.9rem;
-    margin-bottom: 1.5rem; /* Más espacio después de las tablas */
+    color: var(--kine-gray-700);
 }
-.table th, .table td {
-    vertical-align: middle; /* Alinear verticalmente */
-    padding: 0.75rem; /* Más padding */
+#info-paciente-card .form-control {
+    border-color: var(--kine-gray-400);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
-.table th {
-    background-color: #f8f9fa; /* Encabezados con fondo gris claro */
+#info-paciente-card .form-control:focus {
+    border-color: var(--kine-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25); /* Sombra de foco Bootstrap */
 }
-.table-bordered {
-    border-color: #dee2e6;
-}
-.table-responsive {
-    margin-bottom: 1rem; /* Espacio si hay scrollbar */
-}
-.table td.text-center input[type="radio"],
-.table td.text-center input[type="checkbox"] {
-    margin: 0; /* Quitar márgenes extra */
-    vertical-align: middle;
+#info-paciente-card .text-muted.small {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
-/* Estilos para los inputs range */
+/* 5. Estilos Base Formularios (Inputs, Selects, etc.) */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--kine-gray-700);
+}
+.form-control,
+.form-select {
+    border-color: var(--kine-gray-400);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--kine-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Placeholder text - uses root variables */
+::placeholder { color: var(--kine-gray-500); opacity: 1; }
+:-ms-input-placeholder { color: var(--kine-gray-500); }
+::-ms-input-placeholder { color: var(--kine-gray-500); }
+
+/* Inputs Range (Sliders) */
 .form-range {
     cursor: pointer;
 }
 .form-range::-webkit-slider-thumb {
-  background: #0d6efd; /* Pulgar azul */
+  background-color: var(--kine-primary);
 }
 .form-range::-moz-range-thumb {
-  background: #0d6efd;
+  background-color: var(--kine-primary);
 }
 .form-range::-ms-thumb {
-  background: #0d6efd;
+  background-color: var(--kine-primary);
+}
+/* Mostrar valor al lado del slider */
+.form-range + div > span:nth-child(2) {
+    font-weight: 600;
+    color: var(--kine-primary);
+    min-width: 30px; /* Espacio para 3 dígitos */
+    text-align: center;
+    display: inline-block;
 }
 
-/* Estilos para checks (RMDQ, CSI Parte B) */
+/* Checkboxes y Radios */
 .form-check {
-    padding-left: 1.75em; /* Más espacio para el check */
+    margin-bottom: 0.5rem; /* Espacio entre checks/radios */
 }
 .form-check-input {
     cursor: pointer;
-    margin-top: 0.2em; /* Alinear mejor con el texto */
+    border-color: var(--kine-gray-500);
+}
+.form-check-input:checked {
+    background-color: var(--kine-primary);
+    border-color: var(--kine-primary);
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
 }
 .form-check-label {
     cursor: pointer;
+    font-size: 0.95rem;
+    padding-left: 0.5em; /* Más espacio después del check */
+}
+/* 6. Estilos para el Acordeón de Cuestionarios */
+.cuestionarios-acordeon {
+    border: 1px solid var(--kine-gray-300); /* Borde alrededor de todo el acordeón */
+    border-radius: var(--bs-border-radius);
+    overflow: hidden; /* Asegurar bordes redondeados */
+    background-color: var(--kine-white);
 }
 
+.cuestionarios-acordeon .cuestionario-item {
+    border: none; /* Quitar borde individual */
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--kine-gray-300); /* Línea separadora */
+}
+.cuestionarios-acordeon .cuestionario-item:last-child {
+    border-bottom: none; /* Sin borde en el último */
+}
 
-/* Estilos para recomendaciones e interpretación clínica */
+.cuestionarios-acordeon .cuestionario-header {
+    background-color: var(--kine-white);
+    padding: 1rem 1.5rem; /* Ajustar padding */
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none; /* Quitar borde inferior original */
+    transition: background-color 0.2s ease;
+}
+
+.cuestionarios-acordeon .cuestionario-header:hover {
+    background-color: var(--kine-gray-100); /* Fondo gris muy claro al pasar */
+}
+
+.cuestionarios-acordeon .cuestionario-header.active {
+     /* Mantener blanco o un color muy sutil cuando está activo */
+     background-color: var(--kine-white);
+     /* Podríamos añadir un borde inferior más grueso o de color si se desea */
+     /* box-shadow: inset 0 -2px 0 var(--kine-primary); */
+}
+.cuestionarios-acordeon .cuestionario-header.active h4 {
+    color: var(--kine-primary); /* Mantener azul */
+}
+.cuestionarios-acordeon .cuestionario-header.active h4 i {
+    transform: rotate(90deg);
+    color: var(--kine-primary); /* Icono azul */
+}
+
+.cuestionarios-acordeon .cuestionario-header h4 {
+    color: var(--kine-gray-800); /* Título más oscuro por defecto */
+    font-size: 1.15rem;
+}
+.cuestionarios-acordeon .cuestionario-header h4 i {
+    color: var(--kine-primary); /* Icono siempre azul */
+    margin-right: 0.8rem;
+    transition: transform 0.3s ease;
+    width: 1em; /* Asegurar espacio consistente */
+}
+
+.cuestionarios-acordeon .cuestionario-content {
+    padding: 1rem 1.5rem 1.5rem 1.5rem; /* Ajustar padding */
+    border-top: 1px solid var(--kine-gray-200); /* Línea separadora sutil */
+    background-color: var(--kine-white);
+    /* display: none; por defecto via JS */
+}
+.cuestionarios-acordeon .cuestionario-content p:first-of-type {
+    margin-top: 0.5rem; /* Espacio después del título (si el padding no es suficiente) */
+    color: var(--kine-secondary); /* Descripción en gris */
+    font-size: 0.95rem;
+}
+
+/* 7. Estilos para los Resultados */
+.resultado-badge {
+    font-size: 0.75em;
+    padding: 0.4em 0.8em;
+    border-radius: 50rem; /* Píldora */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+.resultado-badge.no-completado { background-color: var(--kine-gray-500); color: white; }
+.resultado-badge.completado { background-color: var(--kine-success); color: white; }
+.resultado-badge.bajo { background-color: var(--kine-success); color: white;}
+.resultado-badge.moderado { background-color: var(--kine-warning); color: var(--kine-dark); }
+.resultado-badge.alto { background-color: var(--kine-danger); color: white;}
+
+.resultado-container {
+    border: 1px solid var(--kine-gray-200);
+    padding: 1.5rem;
+    margin-top: 2rem; /* Más espacio antes de los resultados */
+    border-radius: var(--bs-border-radius);
+    background-color: var(--kine-gray-100); /* Fondo gris más claro que el body */
+    border-left: 5px solid var(--kine-secondary); /* Borde izquierdo por defecto */
+}
+/* Colores borde izquierdo según nivel */
+.resultado-container.nivel-leve { border-left-color: var(--kine-success); }
+.resultado-container.nivel-moderado { border-left-color: var(--kine-warning); }
+.resultado-container.nivel-severo { border-left-color: var(--kine-danger); }
+
+.resultado-label, .resultado-sublabel {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--kine-gray-700);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px; /* Más espaciado */
+}
+.resultado-valor {
+    font-size: 1.3em;
+    color: var(--kine-dark);
+    font-weight: 600; /* Más grueso */
+    margin-bottom: 0.75rem;
+}
+.resultado-interpretacion {
+    margin-top: 0.75rem;
+    font-size: 0.95em;
+    padding: 0.75rem 1rem;
+    border-radius: var(--bs-border-radius);
+    border: 1px solid transparent;
+}
+/* Colores interpretación */
+.resultado-interpretacion.verde,
+.resultado-interpretacion.verde-claro { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
+.resultado-interpretacion.amarillo { background-color: #fff3cd; color: #664d03; border-color: #ffeeba; }
+.resultado-interpretacion.rojo { background-color: #f8d7da; color: #842029; border-color: #f5c2c7; }
+
+
+/* 8. Escala GROC */
+.groc-scale-container { overflow-x: auto; padding-bottom: 15px; white-space: nowrap; }
+.groc-scale { display: inline-flex; gap: 8px; } /* Más espacio */
+.groc-scale input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.groc-scale label {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 10px 12px; border: 1px solid var(--kine-gray-400);
+    border-radius: var(--bs-border-radius); cursor: pointer; font-size: 0.85em;
+    min-width: 65px; min-height: 65px; background-color: var(--kine-white);
+    transition: all 0.2s ease-in-out; user-select: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.groc-scale input[type="radio"]:checked + label {
+    background-color: var(--kine-primary); color: white; border-color: var(--kine-primary);
+    font-weight: bold; transform: scale(1.05); box-shadow: 0 3px 8px rgba(var(--bs-primary-rgb), 0.3);
+}
+.groc-scale label:hover { background-color: var(--kine-gray-100); border-color: var(--kine-gray-500); }
+
+/* 9. Tablas */
+.table { font-size: 0.95rem; }
+.table th, .table td { vertical-align: middle; padding: 0.8rem; }
+.table thead th {
+    background-color: var(--kine-gray-200); /* Encabezado más oscuro */
+    color: var(--kine-gray-700);
+    border-bottom: 2px solid var(--kine-gray-400); /* Borde inferior más grueso */
+    text-align: center;
+}
+.table tbody tr:nth-child(odd) {
+    background-color: var(--kine-gray-100); /* Filas alternas */
+}
+.table-bordered { border: 1px solid var(--kine-gray-300); }
+.table-responsive { margin-bottom: 1.5rem; }
+.table td.text-center input[type="radio"],
+.table td.text-center input[type="checkbox"] { margin: 0; }
+
+/* 10. Contenedores de Interpretación/Recomendaciones */
 .interpretacion-clinica-container, .recomendaciones-container {
     margin-top: 1.5rem;
-    padding: 1.25rem;
-    background-color: #f8f9fa; /* Fondo gris claro */
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
+    padding: 1.5rem;
+    background-color: var(--kine-light); /* Fondo claro */
+    border-radius: var(--bs-border-radius);
+    border: 1px solid var(--kine-gray-200);
 }
 .interpretacion-clinica-container h5, .recomendaciones-container h5 {
     margin-bottom: 1rem;
-    color: #495057; /* Gris oscuro */
-    font-size: 1.05rem;
-    border-bottom: 1px solid #dee2e6; /* Línea separadora */
-    padding-bottom: 0.5rem;
+    color: var(--kine-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--kine-gray-300);
+    padding-bottom: 0.6rem;
 }
-.interpretacion-clinica p, .recomendaciones ul {
-    font-size: 0.95em;
-    line-height: 1.6;
-}
-.recomendaciones ul {
-    padding-left: 1.25rem; /* Indentación estándar */
-    margin-bottom: 0;
-    list-style: disc; /* Viñetas normales */
-}
-.recomendaciones li {
-    margin-bottom: 0.6rem;
-}
+.interpretacion-clinica p, .recomendaciones ul { font-size: 1rem; line-height: 1.7; }
+.recomendaciones ul { padding-left: 1.5rem; margin-bottom: 0; list-style: disc; }
+.recomendaciones li { margin-bottom: 0.75rem; } /* Más espacio entre recomendaciones */
 
-/* Estilo para el botón PDF */
+/* 11. Botón Guardar PDF */
 .cuestionario-content .btn-success {
-    font-size: 0.85rem; /* Botón un poco más pequeño */
-    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50rem; /* Píldora */
+    font-weight: 500;
+    background-color: var(--kine-success);
+    border-color: var(--kine-success);
+    transition: all 0.2s ease;
 }
-.cuestionario-content .btn-success i {
-    margin-right: 0.4rem;
+.cuestionario-content .btn-success:hover {
+    background-color: #157347; /* Verde más oscuro */
+    border-color: #146c43;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(var(--bs-success-rgb), 0.2);
 }
+.cuestionario-content .btn-success i { margin-right: 0.5rem; }
 
-/* Ajustes responsivos */
+/* 12. Ajustes Responsivos Finales */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem; /* Menos padding en móviles */
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-    }
-    h1 {
-        font-size: 1.7rem; /* Título más pequeño */
-    }
-    .cuestionarios-acordeon .cuestionario-header {
-        padding: 0.8rem 1rem;
-    }
-    .cuestionarios-acordeon .cuestionario-header h4 {
-        font-size: 1rem;
-    }
-     .cuestionarios-acordeon .cuestionario-content {
-        padding: 1rem;
-    }
-    .resultado-badge {
-        font-size: 0.7em;
-        padding: 0.3em 0.6em;
-    }
-    .resultado-valor {
-        font-size: 1.15em;
-    }
-    .table {
-        font-size: 0.85rem;
-    }
-    /* Ajustar escala GROC en móvil si es necesario */
-    .groc-scale label {
-        font-size: 0.75em;
-        padding: 6px 5px;
-        min-width: 50px;
-        min-height: 50px;
-    }
-     .interpretacion-clinica p, .recomendaciones ul {
-        font-size: 0.9em;
-    }
+    h1 { font-size: 1.6rem; }
+    .container { padding: 1.25rem; }
+    .cuestionarios-acordeon .cuestionario-header { padding: 0.8rem 1rem; }
+    .cuestionarios-acordeon .cuestionario-header h4 { font-size: 1rem; }
+    .cuestionarios-acordeon .cuestionario-content { padding: 1.25rem; }
+    .resultado-valor { font-size: 1.2em; }
+    .table { font-size: 0.88rem; }
+    .groc-scale label { font-size: 0.8em; padding: 8px; min-width: 55px; min-height: 55px; }
+    .interpretacion-clinica p, .recomendaciones ul { font-size: 0.95em; }
+    /* Asegurar que las columnas de paciente/fecha pasen a vertical */
+    #info-paciente-card .col-md-6 { flex-basis: 100%; max-width: 100%; }
 }
 
-/* Estilos para evitar que el contenido capturado para PDF afecte el layout */
+/* Clase para PDF Capture - opcional */
 .pdf-capture-active {
-    /* Podrías añadir estilos aquí si la captura afecta el layout, */
-    /* pero usualmente no es necesario si se clona bien */
+    /* Puedes añadir estilos aquí si es necesario para la captura, */
+    /* como asegurar que ciertos elementos no se oculten */
 }
