@@ -6782,9 +6782,9 @@
         pdf.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
         
         // Información de página
-        pdf.setFontSize(8);
+        pdf.setFontSize(13);
         pdf.setTextColor(100, 100, 100);
-        pdf.text(`Kinesiólogo Nicolás Ayelef - ${nombreCuestionario}`, margin, pageHeight - 15);
+        pdf.text(`Kinesiólogo Nicolás Ayelef - ${nombreCuestionario}`, margin, pageHeight - 10);
         pdf.text(`Página ${i} de ${totalPages}`, pageWidth - margin, pageHeight - 10, { align: "right" });
     }
 
