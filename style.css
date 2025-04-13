@@ -1,505 +1,491 @@
-/* style.css - NUEVA VERSIÓN ESTÉTICA v2 */
-
-/* 1. Variables Globales (Colores y Fuentes) */
 :root {
-    /* Paleta de Colores Inspirada (Ajustada para Clínica) */
-    --kine-blue-primary: #3B62FF; /* Azul vibrante pero profesional */
-    --kine-blue-light: #E6ECFF; /* Azul muy pálido para fondos */
-    --kine-text-dark: #1A1A1A; /* Negro suave para texto principal */
-    --kine-text-medium: #555555; /* Gris oscuro para texto secundario */
-    --kine-text-light: #888888; /* Gris claro para notas */
-    --kine-bg-light: #F9F9FB; /* Fondo general muy claro, casi blanco */
-    --kine-bg-white: #FFFFFF;
-    --kine-border-color: #EAEAEA; /* Gris muy claro para bordes/separadores */
-    --kine-success: #1FAF5B; /* Verde éxito */
-    --kine-warning: #FFB800; /* Amarillo advertencia */
-    --kine-danger: #FF4D4D; /* Rojo peligro */
-
-    /* Fuentes Solicitadas */
-    --kine-font-headings: 'Montserrat', sans-serif;
-    --kine-font-body: 'Lato', sans-serif;
-
-    /* Sobrescribir variables de Bootstrap si es necesario (opcional) */
-    --bs-primary: var(--kine-blue-primary);
-    --bs-primary-rgb: 59, 98, 255; /* RGB del azul primario */
-    --bs-body-font-family: var(--kine-font-body);
-    --bs-body-color: var(--kine-text-dark);
-    --bs-border-radius: 0.5rem; /* Bordes un poco más redondeados */
-    --bs-card-border-color: var(--kine-border-color);
-    --bs-card-cap-bg: transparent; /* Encabezado de card sin fondo */
-    --bs-card-border-radius: var(--bs-border-radius);
+  --primary-color: #4C7B9C;
+  --primary-dark: #32536A;
+  --primary-light: #7AADDF;
+  --accent-color: #F2994A;
+  --dark-bg: #1A1A1A;
+  --dark-card: #232323;
+  --light-text: #F5F5F5;
+  --card-border-radius: 16px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 2. Estilos Base */
 body {
-    background-color: var(--kine-bg-light);
-    font-family: var(--kine-font-body);
-    font-size: 16px; /* 1rem base */
-    line-height: 1.65; /* Espaciado vertical mejorado */
-    color: var(--kine-text-medium); /* Texto principal un poco más suave */
-    -webkit-font-smoothing: antialiased; /* Mejor renderizado de fuentes */
-	-moz-osx-font-smoothing: grayscale;
+  background-color: #fff4ed;
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* 3. Contenedor Principal */
-.container {
-    max-width: 980px;
-    background-color: var(--kine-bg-white);
-    padding: 2.5rem 3rem;
-    margin: 3rem auto; /* Centrado con márgenes superior/inferior */
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06); /* Sombra más pronunciada */
-}
-
-/* 4. Títulos y Textos */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--kine-font-headings);
-    color: var(--kine-text-dark);
-    font-weight: 600; /* Semibold para Montserrat */
-    margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 h1 {
-    color: var(--kine-blue-primary);
-    text-align: center;
-    margin-bottom: 2.5rem;
-    font-weight: 700; /* Bold para el título principal */
-    font-size: 2.25rem;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--primary-dark);
+  text-align: center;
+  padding-top: 20px;
 }
 
-h3 { /* Ej: "Cuestionarios Clínicos" */
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--kine-border-color);
+.container {
+  padding: 0 15px;
+  max-width: 800px;
 }
 
-h4 { /* Título de Cuestionario en Acordeón */
-    font-size: 1.15rem; /* Ligeramente más pequeño */
-    font-weight: 600;
-    color: var(--kine-text-dark); /* Color oscuro por defecto */
-    margin-bottom: 0;
-}
-
-h5 { /* Subtítulos internos (Ej: Parte 1, Parte 2) */
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--kine-blue-primary); /* Subtítulos en azul */
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--kine-blue-light); /* Borde azul pálido */
-}
-
-p {
-    margin-bottom: 1rem;
-    color: var(--kine-text-medium);
-}
-p.text-muted, p.small {
-    color: var(--kine-text-light) !important; /* Forzar color más claro */
-    font-size: 0.9rem;
-}
-
-/* 5. Tarjeta de Información del Paciente */
+/* Tarjeta de información del paciente */
 #info-paciente-card {
-    background-color: var(--kine-bg-white); /* Fondo blanco */
-    border: 1px solid var(--kine-border-color);
-    border-radius: var(--bs-border-radius);
-    margin-bottom: 3rem; /* Más espacio antes del acordeón */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.04); /* Sombra muy sutil */
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 25px;
+  border: none;
+  background: white;
 }
+
 #info-paciente-card .card-header {
-    background-color: transparent; /* Sin fondo */
-    font-weight: 600;
-    color: var(--kine-text-dark);
-    border-bottom: 1px solid var(--kine-border-color);
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-}
-#info-paciente-card .card-body {
-    padding: 1.5rem;
-}
-#info-paciente-card .form-label {
-    font-weight: 500; /* Medium weight */
-    font-size: 0.9rem;
-    color: var(--kine-text-medium);
-    margin-bottom: 0.3rem;
-}
-#info-paciente-card .form-control {
-    border-color: var(--kine-gray-400);
-    font-size: 1rem;
-    padding: 0.6rem 0.75rem; /* Padding más cómodo */
-}
-#info-paciente-card .form-control:focus {
-    border-color: var(--kine-blue-primary);
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15); /* Sombra de foco más suave */
-}
-#info-paciente-card .text-muted.small {
-    font-size: 0.85rem;
-    margin-top: 0.75rem;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px;
+  font-weight: 600;
+  border: none;
 }
 
-/* 6. Estilos Base Formularios (Dentro de Cuestionarios) */
-.cuestionario-content .form-label {
-    font-weight: 500;
-    margin-bottom: 0.4rem;
-    color: var(--kine-text-dark); /* Labels más oscuros */
-    font-size: 0.95rem;
-}
-.cuestionario-content .form-control,
-.cuestionario-content .form-select {
-    border: 1px solid var(--kine-gray-400); /* Borde estándar */
-    border-radius: 0.3rem; /* Ligeramente menos redondeado que el contenedor */
-    padding: 0.65rem 0.9rem; /* Padding */
-    font-size: 1rem;
-}
-.cuestionario-content .form-control:focus,
-.cuestionario-content .form-select:focus {
-    border-color: var(--kine-blue-primary);
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
+/* Estilos para cuestionarios */
+.cuestionario-item {
+  margin-bottom: 15px;
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  background: white;
 }
 
-/* Inputs Range (Sliders) */
-.cuestionario-content .form-range {
-    padding: 0; /* Quitar padding vertical */
-    cursor: pointer;
-}
-.cuestionario-content .form-range::-webkit-slider-thumb {
-  background-color: var(--kine-blue-primary);
-  border: 2px solid var(--kine-white); /* Borde blanco para destacar */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.cuestionario-content .form-range::-moz-range-thumb {
-  background-color: var(--kine-blue-primary);
-  border: 2px solid var(--kine-white);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.cuestionario-content .form-range::-ms-thumb {
-  background-color: var(--kine-blue-primary);
-  border: 2px solid var(--kine-white);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-/* Valor al lado del slider */
-.cuestionario-content .form-range + div > span:nth-child(2) {
-    font-weight: 700; /* Bold */
-    color: var(--kine-blue-primary);
-    background-color: var(--kine-blue-light); /* Fondo azul pálido */
-    padding: 0.1rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.9em;
-    min-width: 35px;
-    text-align: center;
-    display: inline-block;
-    margin-left: 5px; margin-right: 5px; /* Espacio */
-}
-.cuestionario-content .form-range + div > span:first-child,
-.cuestionario-content .form-range + div > span:last-child {
-    color: var(--kine-text-light);
-    font-size: 0.9em;
+.cuestionario-header {
+  background-color: white;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Checkboxes y Radios (Dentro de Cuestionarios) */
-.cuestionario-content .form-check {
-    margin-bottom: 0.75rem; /* Más espacio entre checks */
-    padding-left: 2em; /* Más espacio para check */
-}
-.cuestionario-content .form-check-input {
-    cursor: pointer;
-    border-color: var(--kine-gray-500);
-    margin-top: 0.25em; /* Alinear mejor */
-    width: 1.25em; /* Ligeramente más grandes */
-    height: 1.25em;
-}
-.cuestionario-content .form-check-input[type=radio] {
-    border-radius: 50%; /* Asegurar círculo perfecto */
-}
-.cuestionario-content .form-check-input:checked {
-    background-color: var(--kine-blue-primary);
-    border-color: var(--kine-blue-primary);
-}
-.cuestionario-content .form-check-input:focus {
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
-}
-.cuestionario-content .form-check-label {
-    cursor: pointer;
-    font-size: 1rem;
-    padding-left: 0.6em; /* Espacio check-label */
-    color: var(--kine-text-medium);
+.cuestionario-header h4 {
+  margin: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  color: #333;
 }
 
-/* 7. Estilos Acordeón (Continuación) */
-.cuestionarios-acordeon .cuestionario-header {
-    position: relative; /* Para pseudo-elementos si se necesitan */
+.cuestionario-header h4 i {
+  margin-right: 10px;
+  transition: transform 0.3s;
+  color: var(--primary-color);
 }
 
-/* Icono del acordeón */
-.cuestionarios-acordeon .cuestionario-header h4 i {
-    color: var(--kine-blue-primary); /* Icono siempre azul */
-    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); /* Transición suave */
-    font-size: 1rem; /* Tamaño del icono */
-    margin-right: 1rem; /* Más espacio */
-}
-.cuestionarios-acordeon .cuestionario-header.active h4 i {
-    transform: rotate(90deg);
+.cuestionario-header.active h4 i {
+  transform: rotate(45deg);
 }
 
-/* Contenido del acordeón */
 .cuestionario-content {
-    padding: 1.5rem 1.75rem 2rem 1.75rem; /* Más padding inferior */
-    border-top: 1px solid var(--kine-border-color);
-    background-color: var(--kine-bg-white);
-    /* display: none; via JS */
-}
-.cuestionario-content p:first-of-type {
-    color: var(--kine-text-medium);
-    font-size: 1rem; /* Texto descriptivo tamaño normal */
-    margin-top: 0; /* Sin margen superior extra */
-    margin-bottom: 1.5rem; /* Espacio antes del formulario */
+  padding: 20px;
 }
 
-/* 8. Estilos Resultados */
+/* Estilo de los badges de resultado */
 .resultado-badge {
-    font-size: 0.7rem; /* Ligeramente más pequeño */
-    padding: 0.4em 0.9em;
-    border-radius: 50rem; /* Píldora */
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px; /* Más espaciado */
-    vertical-align: middle;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }
-/* Colores Badge Estado */
-.resultado-badge.no-completado { background-color: var(--kine-gray-500); color: white; }
-.resultado-badge.completado { background-color: var(--kine-success); color: white; }
-/* Colores Badge Nivel (Si aplica) */
-.resultado-badge.bajo { background-color: var(--kine-success); color: white; }
-.resultado-badge.moderado { background-color: var(--kine-warning); color: var(--kine-text-dark); }
-.resultado-badge.alto { background-color: var(--kine-danger); color: white; }
 
-.resultado-container {
-    border: 1px solid var(--kine-border-color);
-    padding: 1.5rem;
-    margin-top: 2.5rem; /* Más separación */
-    border-radius: var(--bs-border-radius);
-    background-color: var(--kine-bg-light); /* Fondo gris muy claro */
-    border-left: 6px solid var(--kine-gray-500); /* Borde gris por defecto */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04); /* Sombra interna sutil */
+.no-completado {
+  background-color: #e0e0e0;
+  color: #757575;
 }
-/* Colores borde izquierdo */
-.resultado-container.nivel-leve { border-left-color: var(--kine-success); }
-.resultado-container.nivel-moderado { border-left-color: var(--kine-warning); }
-.resultado-container.nivel-severo { border-left-color: var(--kine-danger); }
+
+.completado {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.bajo {
+  background-color: #4CAF50;
+}
+
+.moderado {
+  background-color: #FFC107;
+}
+
+.alto {
+  background-color: #F44336;
+}
+
+/* Contenedor de resultados */
+.resultado-container {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.nivel-leve {
+  border-left: 4px solid #4CAF50;
+}
+
+.nivel-moderado {
+  border-left: 4px solid #FFC107;
+}
+
+.nivel-severo {
+  border-left: 4px solid #F44336;
+}
 
 .resultado-label, .resultado-sublabel {
-    font-family: var(--kine-font-headings); /* Montserrat para labels */
-    font-weight: 600;
-    margin-bottom: 0.3rem;
-    color: var(--kine-text-medium); /* Gris medio */
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px; /* Bien espaciado */
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #555;
 }
+
 .resultado-valor {
-    font-size: 1.4em; /* Más grande */
-    color: var(--kine-text-dark);
-    font-weight: 600;
-    margin-bottom: 0.5rem; /* Menos espacio debajo */
-    line-height: 1.2;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #333;
 }
+
 .resultado-interpretacion {
-    margin-top: 0.5rem;
-    font-size: 0.95em;
-    padding: 0.75rem 1rem;
-    border-radius: 0.3rem;
-    border: none; /* Sin borde, solo fondo */
-    font-weight: 500; /* Medium para interpretación */
-}
-/* Colores interpretación */
-.resultado-interpretacion.verde,
-.resultado-interpretacion.verde-claro { background-color: #d1e7dd; color: #0a3622; }
-.resultado-interpretacion.amarillo { background-color: #fff3cd; color: #664d03; }
-.resultado-interpretacion.rojo { background-color: #f8d7da; color: #58151c; }
-
-/* 9. Escala GROC (Visualización tipo botones) */
-.groc-scale-container { overflow-x: auto; padding-bottom: 15px; white-space: nowrap; }
-.groc-scale { display: inline-flex; gap: 10px; } /* Más espacio */
-.groc-scale input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
-.groc-scale label {
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; padding: 12px 10px; /* Más padding vertical */
-    border: 1px solid var(--kine-border-color);
-    border-radius: var(--bs-border-radius); cursor: pointer; font-size: 0.9em;
-    min-width: 60px; min-height: 70px; background-color: var(--kine-bg-white);
-    transition: all 0.2s ease-in-out; user-select: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.groc-scale input[type="radio"]:checked + label {
-    background-color: var(--kine-blue-primary); color: white; border-color: var(--kine-blue-primary);
-    font-weight: 600; transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(var(--bs-primary-rgb), 0.3);
-}
-.groc-scale label:hover:not(:has(input:checked)) { /* Hover si no está seleccionado */
-    background-color: var(--kine-gray-100); border-color: var(--kine-gray-400);
-    transform: translateY(-1px);
+  font-size: 14px;
 }
 
-/* 10. Tablas */
+.verde {
+  color: #4CAF50;
+}
+
+.verde-claro {
+  color: #8BC34A;
+}
+
+.amarillo {
+  color: #FFC107;
+}
+
+.rojo {
+  color: #F44336;
+}
+
+/* Estilos para las tablas */
 .table {
-    font-size: 0.95rem; /* Tamaño de texto tabla */
-    border-collapse: separate; /* Permite border-radius en tabla */
-    border-spacing: 0;
-    margin-bottom: 2rem;
-    width: 100%;
-}
-.table th, .table td {
-    vertical-align: middle;
-    padding: 0.9rem 1rem; /* Más padding */
-    border: none; /* Quitar bordes individuales */
-    border-bottom: 1px solid var(--kine-border-color); /* Línea separadora inferior */
-}
-.table thead th {
-    font-family: var(--kine-font-headings); /* Montserrat para encabezados */
-    background-color: var(--kine-gray-100); /* Fondo gris muy claro */
-    color: var(--kine-text-medium);
-    font-weight: 600;
-    text-align: center;
-    border-bottom-width: 2px; /* Línea inferior más gruesa */
-     border-top: 1px solid var(--kine-border-color); /* Borde superior también */
-}
-/* Bordes redondeados para tabla */
-.table-responsive {
-     border: 1px solid var(--kine-border-color);
-     border-radius: var(--bs-border-radius);
-     margin-bottom: 2rem;
-}
-.table-responsive > .table {
-     margin-bottom: 0; /* Quitar margen inferior de la tabla dentro del wrapper */
-}
-.table-responsive > .table th:first-child,
-.table-responsive > .table td:first-child {
-     border-left: none;
-}
-.table-responsive > .table th:last-child,
-.table-responsive > .table td:last-child {
-     border-right: none;
-}
-.table-responsive > .table thead th {
-    border-top: none;
-}
-.table-responsive > .table tbody tr:last-child td {
-    border-bottom: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.table td.text-center {
-    text-align: center; /* Asegurar centrado */
-}
-.table td.text-center input[type="radio"],
-.table td.text-center input[type="checkbox"] {
-    margin-top: 0.1em; /* Ajustar alineación vertical del check */
+.table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  font-size: 13px;
 }
 
-/* Estilos para encabezados dentro de tablas (Oswestry) */
-.table thead th.text-start,
-.table tbody td[colspan="6"].bg-light { /* Aplicar a los encabezados de sección de Oswestry */
-    background-color: var(--kine-blue-light) !important; /* Fondo azul pálido */
-    color: var(--kine-blue-primary);
-    font-family: var(--kine-font-headings);
-    font-weight: 600;
-    text-align: left !important;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--kine-border-color) !important;
-    border-top: 1px solid var(--kine-border-color) !important;
+.table td, .table th {
+  padding: 12px;
+  vertical-align: middle;
 }
 
-
-/* 11. Contenedores Interpretación/Recomendaciones */
-.interpretacion-clinica-container, .recomendaciones-container {
-    margin-top: 2rem; /* Más espacio */
-    padding: 1.5rem;
-    background-color: var(--kine-bg-light);
-    border-radius: var(--bs-border-radius);
-    border: 1px solid var(--kine-border-color);
-}
-.interpretacion-clinica-container h5, .recomendaciones-container h5 {
-    font-family: var(--kine-font-headings);
-    margin-bottom: 1rem;
-    color: var(--kine-blue-primary);
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-bottom: 2px solid var(--kine-blue-light);
-    padding-bottom: 0.6rem;
-}
-.interpretacion-clinica p, .recomendaciones ul {
-    font-size: 1rem; /* Tamaño de texto normal */
-    line-height: 1.7;
-    color: var(--kine-text-medium);
-}
-.recomendaciones ul { padding-left: 1.5rem; margin-bottom: 0; list-style-type: none; /* Quitar viñetas por defecto */}
-.recomendaciones li {
-    margin-bottom: 0.75rem;
-    padding-left: 1.5rem; /* Espacio para el icono */
-    position: relative;
-}
-/* Icono personalizado para items de recomendación */
-.recomendaciones li::before {
-    content: "\f058"; /* Icono check-circle de Font Awesome */
-    font-family: "Font Awesome 6 Free"; /* Asegurar que use Font Awesome */
-    font-weight: 900; /* Solid style */
-    color: var(--kine-success); /* Verde */
-    position: absolute;
-    left: 0;
-    top: 0.1em; /* Ajustar alineación vertical */
-    font-size: 1em;
+/* Estilos para inputs y selects */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 10px 15px;
 }
 
-/* 12. Botón Guardar PDF */
-.cuestionario-content .btn-success {
-    font-family: var(--kine-font-headings); /* Montserrat para botones */
-    font-size: 0.9rem;
-    padding: 0.6rem 1.2rem; /* Más padding */
-    border-radius: 50rem;
-    font-weight: 600; /* Semibold */
-    background-color: var(--kine-success);
-    border-color: var(--kine-success);
-    transition: all 0.2s ease;
-    margin-top: 1.5rem; /* Espacio antes del botón */
-}
-.cuestionario-content .btn-success:hover {
-    background-color: #157347; /* Verde más oscuro */
-    border-color: #146c43;
-    transform: translateY(-2px); /* Efecto levantar */
-    box-shadow: 0 4px 10px rgba(var(--bs-success-rgb), 0.25);
-}
-.cuestionario-content .btn-success i { margin-right: 0.6rem; }
-
-/* 13. Ajustes Responsivos Finales */
-@media (max-width: 992px) { /* Tablets y menores */
-     .container { max-width: 95%; padding: 2rem 1.5rem; }
+.form-label {
+  font-weight: 500;
+  color: #555;
 }
 
-@media (max-width: 768px) { /* Móviles grandes y menores */
-    .container { padding: 1.5rem 1rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
-    h1 { font-size: 1.8rem; margin-bottom: 2rem; }
-    h4 { font-size: 1.1rem; }
-    h5 { font-size: 1rem; margin-top: 1.5rem; }
-    .cuestionarios-acordeon .cuestionario-header { padding: 0.9rem 1rem; }
-    .cuestionarios-acordeon .cuestionario-content { padding: 1.25rem; }
-    .resultado-valor { font-size: 1.25em; }
-    .table { font-size: 0.9rem; } /* Ajustar si sigue siendo grande */
-    .groc-scale label { font-size: 0.8em; padding: 8px 6px; min-width: 50px; min-height: 60px;}
-    .interpretacion-clinica p, .recomendaciones ul { font-size: 0.95em; }
-    #info-paciente-card .card-body { padding: 1rem; }
-    .resultado-container { padding: 1rem; }
-    .interpretacion-clinica-container, .recomendaciones-container { padding: 1rem; }
-    .cuestionario-content .btn-success { font-size: 0.85rem; padding: 0.5rem 1rem;}
+/* Estilo para radio buttons y checkboxes */
+input[type="radio"], input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
 }
 
-@media (max-width: 576px) { /* Móviles pequeños */
-     h1 { font-size: 1.6rem; }
-     .table { font-size: 0.85rem; } /* Tablas aún más pequeñas */
-     .cuestionario-content .form-check-label { font-size: 0.95rem;}
-     .cuestionario-content .form-label { font-size: 0.9rem;}
+/* Escalas específicas */
+.groc-scale-container {
+  overflow-x: auto;
+  padding: 10px 0;
 }
 
-/* Clase para PDF Capture (No necesita estilos por ahora) */
-.pdf-capture-active { }
+.groc-scale {
+  display: flex;
+  min-width: 800px;
+}
+
+.groc-scale input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.groc-scale label {
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+  flex: 1;
+  font-size: 11px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.groc-scale input[type="radio"]:checked + label {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.groc-scale label:after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 10px;
+  background-color: #e0e0e0;
+}
+
+/* Botones */
+.btn {
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-success {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-success:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+/* Estilos para móviles */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 10px;
+  }
+  
+  .cuestionario-header h4 {
+    font-size: 15px;
+  }
+  
+  .table-responsive {
+    margin: 0 -15px;
+    width: calc(100% + 30px);
+  }
+  
+  .table {
+    font-size: 12px;
+  }
+  
+  .table td, .table th {
+    padding: 8px 6px;
+  }
+  
+  .btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+
+/* Clases de utilidad */
+.mt-1 { margin-top: 5px; }
+.mt-2 { margin-top: 10px; }
+.mt-3 { margin-top: 15px; }
+.mt-4 { margin-top: 20px; }
+.mb-1 { margin-bottom: 5px; }
+.mb-2 { margin-bottom: 10px; }
+.mb-3 { margin-bottom: 15px; }
+.mb-4 { margin-bottom: 20px; }
+
+/* Ajuste para botones de PDF */
+.btn-pdf {
+  background-color: var(--accent-color);
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.btn-pdf i {
+  margin-right: 8px;
+}
+
+/* Estilos para modo oscuro */
+.dark-mode {
+  background-color: var(--dark-bg);
+  color: var(--light-text);
+}
+
+.dark-mode .cuestionario-item,
+.dark-mode #info-paciente-card {
+  background-color: var(--dark-card);
+}
+
+.dark-mode .cuestionario-header {
+  background-color: var(--dark-card);
+  border-bottom: 1px solid #333;
+}
+
+.dark-mode .cuestionario-header h4 {
+  color: var(--light-text);
+}
+
+.dark-mode .resultado-container {
+  background-color: rgba(255,255,255,0.05);
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+  background-color: #333;
+  border-color: #444;
+  color: var(--light-text);
+}
+
+.dark-mode .table th {
+  background-color: #2a2a2a;
+  color: var(--light-text);
+}
+
+.dark-mode .table {
+  color: var(--light-text);
+  background-color: var(--dark-card);
+}
+
+.dark-mode .resultado-label,
+.dark-mode .resultado-sublabel {
+  color: #ccc;
+}
+
+.dark-mode .resultado-valor {
+  color: white;
+}
+
+/* Switch para modo oscuro */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* Nav Pills para seleccionar cuestionarios en móvil */
+.nav-pills-container {
+  overflow-x: auto;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-pills {
+  display: flex;
+  min-width: max-content;
+}
+
+.nav-pills .nav-link {
+  padding: 8px 15px;
+  margin-right: 10px;
+  border-radius: 25px;
+  background-color: #f5f5f5;
+  color: #555;
+  font-size: 14px;
+  white-space: nowrap;
+  border: none;
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.dark-mode .nav-pills .nav-link {
+  background-color: #333;
+  color: #ddd;
+}
+
+.dark-mode .nav-pills .nav-link.active {
+  background-color: var(--primary-color);
+}
+
+/* Diseño de PDF para captura */
+.pdf-capture-active {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Estilo para tooltips de información */
+.info-tooltip {
+  margin-left: 5px;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+/* Mostrar progreso total de cuestionarios completados */
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress {
+  height: 10px;
+  border-radius: 5px;
+  background-color: #e0e0e0;
+}
+
+.progress-bar {
+  background-color: var(--primary-color);
+  border-radius: 5px;
+}
+
+.progress-text {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #555;
+}
+
+.dark-mode .progress {
+  background-color: #444;
+}
+
+.dark-mode .progress-text {
+  color: #bbb;
+}
