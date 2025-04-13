@@ -489,3 +489,86 @@ input[type="radio"], input[type="checkbox"] {
 .dark-mode .progress-text {
   color: #bbb;
 }
+
+/* Estilos para botones de PDF mejorados */
+.btn-pdf {
+  background-color: #F39C12;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.btn-pdf:hover {
+  background-color: #E67E22;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.btn-pdf i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+/* Mejorar estilizado de los badges */
+.resultado-badge {
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+}
+
+.no-completado {
+  background-color: #E0E0E0;
+  color: #757575;
+}
+
+.completado.bajo {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.completado.moderado {
+  background-color: #FFC107;
+  color: #333;
+}
+
+.completado.alto {
+  background-color: #F44336;
+  color: white;
+}
+
+/* Mejoras para las respuestas del usuario */
+input[type="radio"]:checked + label,
+.form-check-input:checked + .form-check-label {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  background: var(--primary-color);
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: var(--primary-color);
+}
+
+/* Efectos de hover para elementos interactivos */
+.cuestionario-header:hover {
+  background-color: #f9f9f9;
+}
+
+.dark-mode .cuestionario-header:hover {
+  background-color: #2c2c2c;
+}
