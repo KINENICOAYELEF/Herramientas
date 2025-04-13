@@ -22,12 +22,16 @@
 
     <body>
 
+    <button class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container mt-4 mb-5">
         <h1>Cuestionarios de Kinesiología</h1>
 
         <div class="card mb-4" id="info-paciente-card">
             <div class="card-header">
-                Información del Paciente (Para incluir en PDF)
+                Información del Paciente
             </div>
             <div class="card-body">
                 <div class="row">
@@ -40,8 +44,21 @@
                         <input type="date" class="form-control" id="fechaEvaluacion">
                     </div>
                 </div>
-                 <p class="text-muted small">Nota: Esta información solo se usará al generar el PDF.</p>
+                <p class="text-muted small">Nota: Esta información se incluirá en los PDF generados.</p>
             </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 de 0 cuestionarios completados</div>
+        </div>
+
+        <div class="nav-pills-container">
+            <ul class="nav nav-pills" id="questionnaireTabs">
+                <!-- Los tabs se generarán dinámicamente con JavaScript -->
+            </ul>
         </div>
 
         <div id="contenedor-cuestionarios">
@@ -3804,6 +3821,8 @@
               interpretacionEl.textContent = "Complete al menos una actividad para obtener un resultado";
               interpretacionEl.className = "resultado-interpretacion";
           }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular GROC
@@ -3855,6 +3874,8 @@
                    interpretacionEl.className = "resultado-interpretacion";
               }
           }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular SANE
@@ -3897,6 +3918,8 @@
             interpretacionEl.textContent = "Función normal o casi normal";
             interpretacionEl.className = "resultado-interpretacion verde";
           }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función auxiliar para identificar las áreas más afectadas en BPI
@@ -3916,6 +3939,8 @@
             const ultimaArea = areasAfectadas.pop();
             return `principalmente ${areasAfectadas.join(', ')} y ${ultimaArea}`;
           }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -4087,6 +4112,8 @@
                   </ul>
                 `;
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // ***** FIN JAVASCRIPT PARTE 1 *****
@@ -4261,6 +4288,8 @@
                  if(badge) badge.className = "resultado-badge no-completado"; // Ensure badge resets
 
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -4421,6 +4450,8 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                  if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // --- Funciones Auxiliares TSK ---
@@ -4567,6 +4598,8 @@
                   if (recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                   if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // ***** FIN JAVASCRIPT PARTE 2 *****
@@ -4666,6 +4699,8 @@
                   if (resultadoContainer) resultadoContainer.className = "resultado-container";
                   if(badgeElement) badgeElement.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular NDI - Neck Disability Index
@@ -4812,6 +4847,9 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                  if(badge) badge.className = "resultado-badge no-completado";
             }
+
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular el puntaje del QuickDASH
@@ -4942,6 +4980,8 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                   if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular el puntaje del SPADI
@@ -5090,6 +5130,8 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                  if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -5236,6 +5278,8 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                  if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular el Cuestionario de Discapacidad de Roland Morris (RMDQ)
@@ -5356,6 +5400,8 @@
                  }
                  recomendacionesEl.innerHTML = recomendationsHTML;
              }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -5532,6 +5578,8 @@
                   if(badge) badge.className = "resultado-badge no-completado";
             }
              // If user interacted but not enough answers, the badge shows incomplete, and results area shows partial data.
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // ***** FIN JAVASCRIPT PARTE 4 *****
@@ -5690,6 +5738,8 @@
                  if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                  if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular el START Back Tool
@@ -5850,6 +5900,8 @@
                   if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                   if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
         // Función para calcular el LEFS (Lower Extremity Functional Scale)
@@ -6005,6 +6057,8 @@
                   if(recomendacionesEl) recomendacionesEl.textContent = "Complete el cuestionario para obtener recomendaciones terapéuticas.";
                    if(badge) badge.className = "resultado-badge no-completado";
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -6180,6 +6234,8 @@
                  if(resultadoContainer) resultadoContainer.className = "resultado-container";
                  // Badge handled above
             }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -6352,6 +6408,8 @@
                    if(resultadoContainer) resultadoContainer.className = "resultado-container";
                    // Badge handled above
              }
+            // Actualizar barra de progreso
+            setTimeout(actualizarProgresoTotal, 100);
         }
 
 
@@ -6359,184 +6417,185 @@
     // ***** INICIO NUEVA FUNCIÓN GUARDAR PDF *****
 
         async function guardarCuestionarioComoPDF(idContenidoCuestionario, nombreCuestionario) {
-            console.log(`Iniciando guardado PDF para: ${idContenidoCuestionario}`);
-            const { jsPDF } = window.jspdf; // Acceder a jsPDF desde el objeto window global
+    console.log(`Iniciando generación de PDF para: ${nombreCuestionario}`);
+    const { jsPDF } = window.jspdf;
 
-            // 1. Encontrar el elemento del contenido del cuestionario
-            const elementoContenido = document.getElementById(idContenidoCuestionario);
-
-            // 1.1 Encontrar el elemento del header (para obtener el título si es necesario, aunque usamos el nombre pasado)
-             // Asumimos que el header es el hermano anterior al contenido
-             const elementoHeader = elementoContenido ? elementoContenido.previousElementSibling : null;
-
-             // 1.2 Encontrar el contenedor principal del item para incluir el header en la captura
-             const elementoItemCompleto = elementoContenido ? elementoContenido.parentElement : null;
-
-
-            if (!elementoContenido || !elementoHeader || !elementoItemCompleto) {
-                console.error(`Error: No se encontró el contenido (${!!elementoContenido}), header (${!!elementoHeader}) o item completo (${!!elementoItemCompleto}) para ${idContenidoCuestionario}`);
-                alert(`Error al preparar el cuestionario ${nombreCuestionario} para guardar como PDF.`);
-                return;
+    // Obtener información del paciente
+    const nombrePaciente = document.getElementById('nombrePaciente')?.value || 'No especificado';
+    const fechaInput = document.getElementById('fechaEvaluacion')?.value;
+    let fechaFormateada = 'No especificada';
+    if (fechaInput) {
+        try {
+            const parts = fechaInput.split('-');
+            const fechaObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            if (!isNaN(fechaObj)) {
+                fechaFormateada = fechaObj.toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' });
             }
+        } catch (e) { console.error("Error formateando fecha:", e); }
+    }
 
-            // 2. Asegurarse que el contenido esté visible para capturarlo
-            // Guardamos el estado original para restaurarlo después
-            const displayOriginalContenido = elementoContenido.style.display;
-            elementoContenido.style.display = 'block';
-             // Añadir una clase temporal para asegurar que el contenido no se colapse por otros estilos
-             elementoItemCompleto.classList.add('pdf-capture-active');
+    // Crear PDF
+    const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+    });
 
+    // Configuración de página
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 15;
+    const contentWidth = pageWidth - (margin * 2);
+    let yPos = margin;
 
-             // --- Crear un contenedor temporal para el PDF ---
-             // Esto nos permite añadir información extra (nombre, fecha) y controlar mejor qué se captura
-             const pdfContenedor = document.createElement('div');
-             pdfContenedor.style.position = 'absolute'; // Fuera de la vista normal
-             pdfContenedor.style.left = '-9999px';
-             pdfContenedor.style.width = '800px'; // Ancho fijo para la captura (simula A4)
-             pdfContenedor.style.padding = '20px';
-             pdfContenedor.style.backgroundColor = '#ffffff'; // Fondo blanco
-             pdfContenedor.style.border = '1px solid #ccc'; // Borde visible si algo falla
+    // Estilo de texto
+    pdf.setFont("helvetica");
+    pdf.setFontSize(16);
+    pdf.setTextColor(76, 123, 156); // Color primario para el título
 
-            // 3. Obtener Nombre y Fecha
-            const nombrePaciente = document.getElementById('nombrePaciente')?.value || 'No especificado';
-            const fechaInput = document.getElementById('fechaEvaluacion')?.value;
-            let fechaFormateada = 'No especificada';
-            if (fechaInput) {
-                 try {
-                     // Ajuste para asegurar que la fecha se interprete correctamente
-                     const parts = fechaInput.split('-'); // YYYY-MM-DD
-                     const fechaObj = new Date(parts[0], parts[1] - 1, parts[2]); // Mes es 0-indexado
-                     if (!isNaN(fechaObj)) {
-                        fechaFormateada = fechaObj.toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' });
-                    }
-                 } catch (e) { console.error("Error formateando fecha:", e); }
-            }
+    // Añadir título
+    pdf.text(nombreCuestionario, pageWidth / 2, yPos, { align: "center" });
+    yPos += 10;
 
-             // 4. Clonar el contenido del cuestionario y añadirlo al contenedor temporal
-             // Clonamos el header y el contenido para incluirlos juntos
-             const headerClonado = elementoHeader.cloneNode(true);
-             const contenidoClonado = elementoContenido.cloneNode(true);
+    // Añadir información del paciente
+    pdf.setFontSize(10);
+    pdf.setTextColor(60, 60, 60);
+    pdf.text(`Paciente: ${nombrePaciente}`, margin, yPos);
+    yPos += 5;
+    pdf.text(`Fecha: ${fechaFormateada}`, margin, yPos);
+    yPos += 10;
 
-              // Limpiar el header clonado (quitar badge, ajustar icono)
-              headerClonado.querySelector('.resultado-badge')?.remove(); // Quitar badge de estado
-              const iconoHeader = headerClonado.querySelector('h4 i');
-              if(iconoHeader) iconoHeader.style.display = 'none'; // Ocultar icono expandir
+    // Línea separadora
+    pdf.setDrawColor(200, 200, 200);
+    pdf.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 8;
 
-             // Limpiar el contenido clonado (quitar botón PDF)
-             contenidoClonado.querySelector('button.btn-success')?.remove(); // Quitar botón PDF del clon
+    // Obtener datos del cuestionario
+    const elementoContenido = document.getElementById(idContenidoCuestionario);
+    if (!elementoContenido) {
+        console.error(`Error: No se encontró el contenido para ${idContenidoCuestionario}`);
+        alert(`Error al generar el PDF para ${nombreCuestionario}.`);
+        return;
+    }
 
-             // Añadir Info Paciente al inicio del contenedor PDF
-             const infoDiv = document.createElement('div');
-             infoDiv.style.marginBottom = '20px';
-             infoDiv.style.borderBottom = '1px solid #eee';
-             infoDiv.style.paddingBottom = '15px';
-             infoDiv.innerHTML = `
-                 <h3>${nombreCuestionario}</h3>
-                 <p style="font-size: 10pt;"><strong>Paciente:</strong> ${nombrePaciente}</p>
-                 <p style="font-size: 10pt;"><strong>Fecha:</strong> ${fechaFormateada}</p>
-             `;
-             pdfContenedor.appendChild(infoDiv);
-             pdfContenedor.appendChild(contenidoClonado); // Añadir contenido clonado y limpio
+    // Extraer datos según el tipo de cuestionario
+    pdf.setFontSize(11);
+    pdf.setTextColor(0, 0, 0);
 
-             // Añadir el contenedor temporal al body para que html2canvas lo renderice
-             document.body.appendChild(pdfContenedor);
+    // Encontrar el elemento de resultado
+    const resultadoContainer = elementoContenido.querySelector('.resultado-container');
+    if (resultadoContainer) {
+        // Extraer información del resultado
+        const valorTotal = resultadoContainer.querySelector('[id$="-valor-total"]')?.textContent || '';
+        const interpretacion = resultadoContainer.querySelector('[id$="-interpretacion-total"]')?.textContent || '';
+        const interpretacionClinica = resultadoContainer.querySelector('[id$="-interpretacion-clinica"]')?.innerHTML || '';
+        const recomendaciones = resultadoContainer.querySelector('[id$="-recomendaciones"]')?.innerHTML || '';
 
+        // Añadir sección de resultados
+        pdf.setFontSize(12);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Resultados", margin, yPos);
+        yPos += 6;
 
-            // 5. Crear el objeto PDF (A4, mm)
-            const pdf = new jsPDF({
-                orientation: 'p',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            try {
-                // 6. Usar html2canvas para capturar el CONTENEDOR TEMPORAL como imagen
-                 console.log("Iniciando html2canvas...");
-                const canvas = await html2canvas(pdfContenedor, { // Captura el contenedor temporal
-                     scale: 2,
-                     useCORS: true,
-                     logging: true // Habilitar logs de html2canvas para depuración
-                });
-                 console.log("html2canvas completado.");
-                const imgData = canvas.toDataURL('image/png');
-
-                // 7. Calcular dimensiones y añadir imagen al PDF
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfPageWidth = pdf.internal.pageSize.getWidth();
-                const pdfPageHeight = pdf.internal.pageSize.getHeight();
-                const margin = 15; // Margen de 15mm
-                const pdfWidth = pdfPageWidth - 2 * margin;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width; // Alto proporcional
-
-                let currentHeight = 0; // Posición Y actual en la imagen original (en px)
-                let remainingHeight = canvas.height; // Alto total de la imagen en px
-                let page = 1;
-
-                 while (remainingHeight > 0) {
-                     if (page > 1) {
-                         pdf.addPage();
-                     }
-                     // Calcular cuánto de la imagen cabe en la página actual (en px)
-                     // Altura disponible en mm: pdfPageHeight - (margen superior + margen inferior)
-                     const availableHeightMM = pdfPageHeight - (margin * 2);
-                     // Convertir altura disponible a píxeles de la imagen original
-                     const heightToDrawPX = Math.min(remainingHeight, (availableHeightMM / pdfHeight) * canvas.height);
-
-                      console.log(`Página ${page}: Dibujando ${heightToDrawPX}px de ${remainingHeight}px restantes.`);
-
-                     // Crear un canvas temporal para la porción de la imagen
-                     const tempCanvas = document.createElement('canvas');
-                     tempCanvas.width = canvas.width;
-                     tempCanvas.height = heightToDrawPX;
-                     const tempCtx = tempCanvas.getContext('2d');
-
-                     // Dibujar la porción correspondiente de la imagen original en el canvas temporal
-                     tempCtx.drawImage(canvas,
-                         0, currentHeight, // Origen X, Y en la imagen fuente
-                         canvas.width, heightToDrawPX, // Ancho, Alto de la fuente a copiar
-                         0, 0, // Destino X, Y en el canvas temporal
-                         canvas.width, heightToDrawPX // Ancho, Alto en el canvas temporal
-                     );
-
-                     const imgChunkData = tempCanvas.toDataURL('image/png');
-                      // Calcular altura de la porción en mm para el PDF
-                      const heightToDrawMM = (heightToDrawPX * pdfWidth) / canvas.width;
-
-
-                     // Añadir la porción de imagen al PDF
-                     pdf.addImage(imgChunkData, 'PNG', margin, margin, pdfWidth, heightToDrawMM);
-
-                     remainingHeight -= heightToDrawPX; // Reducir la altura restante
-                     currentHeight += heightToDrawPX; // Avanzar en la imagen original
-                     page++;
-                 }
-
-
-                // 8. Generar nombre de archivo sugerido
-                 // Limpiar nombres para evitar caracteres inválidos en archivos
-                 const nombreLimpio = nombrePaciente.replace(/[^a-z0-9_-\s]/gi, '').replace(/\s+/g, '_') || 'SinNombre';
-                 const fechaLimpia = fechaFormateada.replace(/[^a-z0-9_-]/gi, '-') || 'SinFecha';
-                 const cuestionarioLimpio = nombreCuestionario.replace(/[^a-z0-9_-]/gi, '_');
-                const nombreArchivo = `Cuestionario_${cuestionarioLimpio}_${nombreLimpio}_${fechaLimpia}.pdf`;
-
-                // 9. Guardar el PDF
-                 console.log("Guardando PDF:", nombreArchivo);
-                pdf.save(nombreArchivo);
-
-            } catch (error) {
-                 console.error("Error detallado al generar el PDF:", error);
-                 alert(`Hubo un error al generar el PDF para ${nombreCuestionario}. Revisa la consola (F12) para más detalles técnicos.`);
-            } finally {
-                 // Restaurar la visibilidad original del elemento del cuestionario
-                 elementoContenido.style.display = displayOriginalContenido;
-                 // Quitar clase temporal
-                 elementoItemCompleto.classList.remove('pdf-capture-active');
-                 // Eliminar el contenedor temporal del body
-                 document.body.removeChild(pdfContenedor);
-                  console.log(`Guardado PDF para ${idContenidoCuestionario} finalizado.`);
-
-            }
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(10);
+        if (valorTotal) {
+            pdf.text(`Puntuación: ${valorTotal}`, margin, yPos);
+            yPos += 5;
         }
+        if (interpretacion) {
+            pdf.text(`Interpretación: ${interpretacion}`, margin, yPos);
+            yPos += 8;
+        }
+
+        // Añadir interpretación clínica si existe
+        if (interpretacionClinica) {
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "bold");
+            pdf.text("Interpretación Clínica", margin, yPos);
+            yPos += 6;
+            
+            // Procesar el HTML de la interpretación clínica
+            const textoLimpio = limpiarHTML(interpretacionClinica);
+            
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            const lineasInterpretacion = pdf.splitTextToSize(textoLimpio, contentWidth);
+            
+            // Comprobar si necesitamos una nueva página
+            if (yPos + (lineasInterpretacion.length * 5) > pdf.internal.pageSize.getHeight() - margin) {
+                pdf.addPage();
+                yPos = margin;
+            }
+            
+            pdf.text(lineasInterpretacion, margin, yPos);
+            yPos += (lineasInterpretacion.length * 5) + 5;
+        }
+
+        // Añadir recomendaciones si existen
+        if (recomendaciones) {
+            // Comprobar si necesitamos una nueva página
+            if (yPos + 40 > pdf.internal.pageSize.getHeight() - margin) {
+                pdf.addPage();
+                yPos = margin;
+            }
+            
+            pdf.setFontSize(12);
+            pdf.setFont("helvetica", "bold");
+            pdf.text("Recomendaciones Terapéuticas", margin, yPos);
+            yPos += 6;
+            
+            const textoLimpio = limpiarHTML(recomendaciones);
+            
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            const lineasRecomendaciones = pdf.splitTextToSize(textoLimpio, contentWidth);
+            
+            pdf.text(lineasRecomendaciones, margin, yPos);
+            yPos += (lineasRecomendaciones.length * 5);
+        }
+    } else {
+        pdf.text("No se encontraron resultados para este cuestionario.", margin, yPos);
+    }
+
+    // Añadir pie de página
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text(`Página ${i} de ${totalPages} - Cuestionario ${nombreCuestionario}`, pageWidth / 2, pdf.internal.pageSize.getHeight() - 10, { align: "center" });
+    }
+
+    // Guardar el PDF
+    const nombreLimpio = nombrePaciente.replace(/[^a-z0-9_-\s]/gi, '').replace(/\s+/g, '_') || 'SinNombre';
+    const fechaLimpia = fechaFormateada.replace(/[^a-z0-9_-]/gi, '-') || 'SinFecha';
+    const cuestionarioLimpio = nombreCuestionario.replace(/[^a-z0-9_-]/gi, '_');
+    const nombreArchivo = `Cuestionario_${cuestionarioLimpio}_${nombreLimpio}_${fechaLimpia}.pdf`;
+    
+    pdf.save(nombreArchivo);
+    console.log(`PDF generado con éxito: ${nombreArchivo}`);
+}
+
+// Función auxiliar para limpiar HTML
+function limpiarHTML(html) {
+    if (!html) return '';
+    
+    // Eliminar etiquetas HTML
+    let texto = html.replace(/<\/?[^>]+(>|$)/g, " ");
+    
+    // Reemplazar entidades HTML comunes
+    texto = texto.replace(/&nbsp;/g, " ")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&amp;/g, "&")
+                .replace(/&quot;/g, '"')
+                .replace(/&apos;/g, "'");
+    
+    // Eliminar espacios múltiples
+    texto = texto.replace(/\s+/g, " ").trim();
+    
+    return texto;
+}
 
         // ***** FIN NUEVA FUNCIÓN GUARDAR PDF *****
 
@@ -6602,6 +6661,100 @@
         });
         // ***** FIN CÓDIGO DE INICIALIZACIÓN *****
 
+    // Funciones para la interfaz moderna
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar modo oscuro
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    
+    // Comprobar preferencia guardada
+    const darkModeSaved = localStorage.getItem('darkMode') === 'true';
+    if (darkModeSaved) {
+        body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    
+    darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+        
+        darkModeToggle.innerHTML = isDarkMode 
+            ? '<i class="fas fa-sun"></i>' 
+            : '<i class="fas fa-moon"></i>';
+    });
+    
+    // Generar navegación de pestañas
+    const questionnaireTabs = document.getElementById('questionnaireTabs');
+    const cuestionarioItems = document.querySelectorAll('.cuestionario-item');
+    
+    if (questionnaireTabs && cuestionarioItems.length > 0) {
+        cuestionarioItems.forEach((item, index) => {
+            const id = item.id;
+            const titulo = item.querySelector('.cuestionario-header h4').innerText.trim();
+            const badge = item.querySelector('.resultado-badge').cloneNode(true);
+            
+            const li = document.createElement('li');
+            li.className = 'nav-item';
+            
+            const button = document.createElement('button');
+            button.className = 'nav-link';
+            button.textContent = titulo.replace(/\([^)]*\)/g, '').trim();
+            if (index === 0) button.classList.add('active');
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Activar pestaña
+                document.querySelectorAll('#questionnaireTabs .nav-link').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                button.classList.add('active');
+                
+                // Mostrar cuestionario y ocultar los demás
+                cuestionarioItems.forEach(item => {
+                    item.style.display = 'none';
+                });
+                document.getElementById(id).style.display = 'block';
+                
+                // Expandir el contenido
+                const contentId = document.getElementById(id).querySelector('.cuestionario-content').id;
+                if (document.getElementById(contentId).style.display === 'none') {
+                    toggleCuestionario(contentId);
+                }
+            });
+            
+            li.appendChild(button);
+            questionnaireTabs.appendChild(li);
+        });
+    }
+    
+    // Actualizar progreso de cuestionarios completados
+    actualizarProgresoTotal();
+});
+
+// Función para actualizar la barra de progreso
+function actualizarProgresoTotal() {
+    const totalCuestionarios = document.querySelectorAll('.cuestionario-item').length;
+    const completados = document.querySelectorAll('.resultado-badge.completado').length;
+    
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    if (progressBar && progressText) {
+        const porcentaje = totalCuestionarios > 0 ? (completados / totalCuestionarios) * 100 : 0;
+        progressBar.style.width = `${porcentaje}%`;
+        progressText.textContent = `${completados} de ${totalCuestionarios} cuestionarios completados`;
+    }
+}
+
+// Sobrescribir la función toggleCuestionario para actualizar progreso
+const originalToggleCuestionario = toggleCuestionario;
+toggleCuestionario = function(contentId) {
+    originalToggleCuestionario(contentId);
+    setTimeout(actualizarProgresoTotal, 100); // Pequeño retraso para que se actualice después de los cálculos
+}
+    
     </script> 
     </body> 
 </html>
